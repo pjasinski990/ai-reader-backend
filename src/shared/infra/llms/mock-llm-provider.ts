@@ -1,4 +1,4 @@
-import { LLMProvider, Message, Role } from '../../application/ports/out/llm-provider';
+import { LLMProvider, Message, Role } from '@/shared/ports/out/llm-provider';
 import { MockMessage, RandomMessage } from '@/shared/infra/mocks/mock-message';
 import { Random } from '@/shared/infra/mocks/random';
 

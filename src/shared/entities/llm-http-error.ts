@@ -1,10 +1,7 @@
-import { LLMQueryError } from '@/shared/entities/llm-query-error';
+import { HttpError } from '@/shared/entities/http-error';
 
-export class LLMHttpError extends LLMQueryError {
-    status?: number;
-
+export class LLMHttpError extends HttpError {
     constructor(message: string, status?: number) {
-        super(message);
-        this.status = status;
+        super(status ?? 502, message);
     }
 }

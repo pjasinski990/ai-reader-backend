@@ -17,7 +17,7 @@ import { JsonVectorRepo } from '@/contexts/material/infra/vector-repo/json-vecto
 import { LLMSummarizer } from '@/contexts/material/infra/summarizing/llm-summarizer';
 import { UploadMaterialUseCase } from '@/contexts/material/application/use-cases/upload-material';
 
-export class UploadsController {
+export class MaterialController {
     constructor(
         private readonly parserManager: ParserManager,
         private readonly materialRepo: MaterialRepo,
@@ -28,13 +28,7 @@ export class UploadsController {
         private readonly uploadMaterialUseCase: UploadMaterial,
     ) { }
 
-    async uploadMaterial(file: File): Promise<Material> {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const upload: UserUpload = {
-            name: file.name,
-            mimeType: file.type,
-            data: buffer,
-        };
+    async uploadMaterial(upload: UserUpload): Promise<Material> {
         return await this.uploadMaterialUseCase.execute(
             this.parserManager,
             this.materialRepo,
@@ -63,7 +57,7 @@ const parserManager: ParserManager = new ParserManager();
 parserManager.register(new PdfParser());
 parserManager.register(new TxtParser());
 
-export const uploadsController = new UploadsController(
+export const materialController = new MaterialController(
     parserManager,
     new JsonMaterialRepo(),
     new RecursiveTextChunker(),

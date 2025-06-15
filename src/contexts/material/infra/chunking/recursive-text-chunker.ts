@@ -1,6 +1,6 @@
 import { decode, encode } from 'gpt-tokenizer';
-import { TextChunk } from '@/shared/entities/chunk';
 import { v4 as uuidv4 } from 'uuid';
+import { TextChunk } from '@/contexts/material/entities/chunk';
 
 export class RecursiveTextChunker {
     constructor(

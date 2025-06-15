@@ -1,5 +1,5 @@
-import { Summarizable, Summarized } from '@/shared/entities/chunk';
-import { Summarizer } from '@/shared/ports/out/summarizer';
+import { Summarizer } from '@/contexts/material/application/ports/out/summarizer';
+import { Summarizable, Summarized } from '@/contexts/material/entities/chunk';
 
 export class MockSummarizer implements Summarizer {
     summarize<T extends Summarizable>(chunks: T[]): Promise<(T & Summarized)[]> {

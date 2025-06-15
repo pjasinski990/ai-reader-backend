@@ -1,4 +1,4 @@
-import { LeafChunk } from '@/shared/entities/chunk';
+import { LeafChunk } from '@/contexts/material/entities/chunk';
 
 export interface VectorRepo {
     get(ids: string[]): Promise<LeafChunk[]>;

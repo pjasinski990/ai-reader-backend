@@ -1,7 +1,7 @@
-import { Message, Role } from '@/shared/application/ports/out/llm-provider';
-import { FunctionCallingArguments, ReturnSchema, StructuredLLMProvider } from '@/shared/application/ports/out/structured-llm-provider';
 import OpenAI from 'openai';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions/completions';
+import { FunctionCallingArguments, ReturnSchema, StructuredLLMProvider } from '@/contexts/material/application/ports/out/structured-llm-provider';
+import { Message, Role } from '@/shared/ports/out/llm-provider';
 
 export class OpenAIStructuredProvider implements StructuredLLMProvider {
     client: OpenAI;

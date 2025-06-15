@@ -1,4 +1,4 @@
-import { Summarizable, Summarized } from '@/shared/entities/chunk';
+import { Summarizable, Summarized } from '@/contexts/material/entities/chunk';
 
 export interface Summarizer {
     summarize<T extends Summarizable>(chunks: T[]): Promise<(T & Summarized)[]>;

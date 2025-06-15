@@ -1,5 +1,5 @@
-import { MaterialRepo } from '@/shared/application/ports/out/material-repo';
-import { Material } from '@/shared/entities/material';
+import { MaterialRepo } from '@/contexts/material/application/ports/out/material-repo';
+import { Material } from '@/contexts/material/entities/material';
 
 export class InMemoryMaterialRepo implements MaterialRepo {
     materials: Material[] = [];

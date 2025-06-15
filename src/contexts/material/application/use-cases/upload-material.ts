@@ -1,15 +1,15 @@
-import { UploadMaterial } from '@/shared/application/ports/in/upload-material';
-import { ParserManager } from '../services/parser-manager';
-import { UserUpload } from '@/shared/entities/user-upload';
-import { MaterialRepo } from '@/shared/application/ports/out/material-repo';
-import { Material } from '@/shared/entities/material';
 import { v4 as uuidv4 } from 'uuid';
-import { EmbeddingProvider } from '@/shared/ports/out/embedding-provider';
-import { TextChunker } from '@/shared/application/ports/out/text-chunker';
-import { VectorRepo } from '@/shared/ports/out/vector-repo';
-import { LeafChunk, ParentChunk, SummarizedChunk, TextChunk } from '@/shared/entities/chunk';
-import { Summarizer } from '@/shared/ports/out/summarizer';
 import mime from 'mime-types';
+import { UploadMaterial } from '@/contexts/material/application/ports/in/upload-material';
+import { ParserManager } from '@/contexts/material/application/services/parser-manager';
+import { MaterialRepo } from '@/contexts/material/application/ports/out/material-repo';
+import { TextChunker } from '@/contexts/material/application/ports/out/text-chunker';
+import { EmbeddingProvider } from '@/contexts/material/application/ports/out/embedding-provider';
+import { Summarizer } from '@/contexts/material/application/ports/out/summarizer';
+import { VectorRepo } from '@/contexts/material/application/ports/out/vector-repo';
+import { UserUpload } from '@/contexts/material/entities/user-upload';
+import { Material } from '@/contexts/material/entities/material';
+import { LeafChunk, ParentChunk, SummarizedChunk, TextChunk } from '@/contexts/material/entities/chunk';
 
 export class UploadMaterialUseCase implements UploadMaterial {
     async execute(

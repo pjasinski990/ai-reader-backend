@@ -1,7 +1,7 @@
-import { Summarizer } from '@/shared/ports/out/summarizer';
-import { Summarizable, Summarized } from '@/shared/entities/chunk';
-import { LLMProvider, Message, Role } from '@/shared/application/ports/out/llm-provider';
 import { v4 as uuidv4 } from 'uuid';
+import { Summarizer } from '@/contexts/material/application/ports/out/summarizer';
+import { LLMProvider, Message, Role } from '@/shared/ports/out/llm-provider';
+import { Summarizable, Summarized } from '@/contexts/material/entities/chunk';
 
 export class LLMSummarizer implements Summarizer {
     constructor(private readonly llm: LLMProvider) { }

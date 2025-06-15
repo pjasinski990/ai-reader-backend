@@ -1,5 +1,5 @@
-import { EmbeddingProvider } from '@/shared/ports/out/embedding-provider';
-import { Embeddable, Embedded } from '@/shared/entities/chunk';
+import { EmbeddingProvider } from '@/contexts/material/application/ports/out/embedding-provider';
+import { Embeddable, Embedded } from '@/contexts/material/entities/chunk';
 
 export class MockEmbeddingProvider implements EmbeddingProvider {
     embed<T extends Embeddable>(chunks: T[]): Promise<(T & Embedded)[]> {
