@@ -1,5 +1,3 @@
-import pluginReact from 'eslint-plugin-react';
-
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
@@ -15,8 +13,6 @@ const config = [
     ...compat.extends(
         'plugin:@typescript-eslint/recommended',
     ),
-    pluginReact.configs.flat.recommended,
-
     {
         files: ['**/*.ts', '**/*.tsx'],
         languageOptions: {
