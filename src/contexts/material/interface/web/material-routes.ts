@@ -2,14 +2,10 @@ import { Router } from 'express';
 
 export const materialRoutes = Router();
 
-materialRoutes.get('/:id', (req, res) => {
-    res.send('get material');
-    // parse body, call controller
+materialRoutes.post('/', () => {
+    console.log('upload material')
 });
 
-materialRoutes.post('/:id', (req, res) => {
-    res.send('set material');
-    // parse body, call controller
+materialRoutes.get('/:id', () => {
+    console.log('get material')
 });
-
-export default materialRoutes;

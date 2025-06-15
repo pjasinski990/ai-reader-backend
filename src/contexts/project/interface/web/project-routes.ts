@@ -7,8 +7,8 @@ projectRoutes.get('/:id', (req, res) => {
     // parse body, call controller
 });
 
-projectRoutes.post('/:id', (req, res) => {
-    res.send('set project');
+projectRoutes.post('/', (req, res) => {
+    res.send('add project');
     // parse body, call controller
 });
 
