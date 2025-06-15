@@ -48,6 +48,10 @@ export class MaterialController {
         const allMaterials = await this.materialRepo.getAll();
         return allMaterials.filter(material => materialIds.includes(material.id));
     }
+
+    async getAllMaterials(): Promise<Material[]> {
+        return await this.materialRepo.getAll();
+    }
 }
 
 const apiKey = process.env.OPENAI_API_KEY;

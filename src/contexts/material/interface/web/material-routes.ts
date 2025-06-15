@@ -4,6 +4,7 @@ import { UserUpload } from '@/contexts/material/entities/user-upload';
 import { materialController } from '@/contexts/material/interface/controllers/material-controller';
 import { ValidationError } from '@/shared/entities/validation-error';
 import { asyncWrapper } from '@/shared/utils/async-wrapper';
+import { MissingResourceError } from '@/shared/entities/missing-resource-error';
 
 export const materialRoutes = Router();
 
@@ -23,9 +24,26 @@ materialRoutes.post(
     }),
 );
 
-materialRoutes.get('/:id', () => {
-    console.log('get material');
-});
+materialRoutes.get(
+    '/',
+    asyncWrapper(async (req, res) => {
+        console.log('Get all materials');
+        const materials = await materialController.getAllMaterials();
+        res.status(200).json(materials);
+    }),
+);
+
+materialRoutes.get(
+    '/:id',
+    asyncWrapper(async (req, res) => {
+        console.log('Get material');
+        const materials = await materialController.getMaterialsByIds([req.params.id]);
+        if (!materials[0]) {
+            throw new MissingResourceError(`Material id: ${req.params.id} not found`);
+        }
+        res.status(200).json(materials[0]);
+    }),
+);
 
 function parseUploadRequest(req: Request): UserUpload {
     const parseResult = PostMaterialSchema.safeParse(req.body);

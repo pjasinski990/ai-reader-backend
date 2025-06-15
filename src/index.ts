@@ -16,6 +16,7 @@ app.use('/api/material', materialRoutes);
 app.use('/api/project', projectRoutes);
 
 app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
+    void req;
     void _next;
 
     if (err instanceof ValidationError) {
