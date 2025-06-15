@@ -1,7 +1,7 @@
+import { ParserManager } from '@/contexts/material/application/services/parser-manager';
+import { UserUpload } from '@/contexts/material/entities/user-upload';
+import { MockParser } from '@/contexts/material/infra/mocks/mock-parser';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ParserManager } from '@/shared/application/services/parser-manager';
-import { MockParser } from '@/shared/infra/mocks/mock-parser';
-import { UserUpload } from '@/shared/entities/user-upload';
 
 describe('parser manager service', () => {
     let service: ParserManager;

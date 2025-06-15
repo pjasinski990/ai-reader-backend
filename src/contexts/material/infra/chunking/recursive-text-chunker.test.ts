@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { encode } from 'gpt-tokenizer';
-import { RecursiveTextChunker } from './recursive-text-chunker';
+import { RecursiveTextChunker } from '@/contexts/material/infra/chunking/recursive-text-chunker';
 
 describe('TextChunker', () => {
     const CHUNK_SIZE = 50;
@@ -106,7 +106,7 @@ describe('TextChunker', () => {
         const byId = Object.fromEntries(chunks.map(c => [c.id, c]));
 
         chunks.forEach(chunk => {
-            chunk.childrenIds.forEach(childId => {
+            chunk.childrenIds.forEach((childId: string) => {
                 expect(byId[childId]).toBeDefined();
                 expect(byId[childId].parentId).toBe(chunk.id);
             });
@@ -115,7 +115,7 @@ describe('TextChunker', () => {
         chunks
             .filter(chunk => chunk.childrenIds.length > 0)
             .forEach(chunk => {
-                chunk.childrenIds.forEach(childId => {
+                chunk.childrenIds.forEach((childId: string) => {
                     expect(byId[childId].parentId).toBe(chunk.id);
                 });
             });

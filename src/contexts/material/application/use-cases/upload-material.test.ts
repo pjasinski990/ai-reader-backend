@@ -1,18 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ParserManager } from '@/shared/application/services/parser-manager';
-import { MockParser } from '@/shared/infra/mocks/mock-parser';
-import { UserUpload } from '@/shared/entities/user-upload';
-import { UploadMaterialUseCase } from './upload-material';
-import { MaterialRepo } from '../ports/out/material-repo';
-import { InMemoryMaterialRepo } from '@/shared/infra/mocks/in-memory-material-repo';
-import { EmbeddingProvider } from '@/shared/ports/out/embedding-provider';
-import { TextChunker } from '../ports/out/text-chunker';
-import { Summarizer } from '@/shared/ports/out/summarizer';
-import { VectorRepo } from '@/shared/ports/out/vector-repo';
-import { RecursiveTextChunker } from '@/shared/infra/chunking/recursive-text-chunker';
-import { MockEmbeddingProvider } from '@/shared/infra/mocks/mock-embedding-provider';
-import { MockSummarizer } from '@/shared/infra/mocks/mock-summarizer';
-import { InMemoryVectorRepo } from '@/shared/infra/mocks/in-memory-vector-repo';
+import { UploadMaterialUseCase } from '@/contexts/material/application/use-cases/upload-material';
+import { ParserManager } from '@/contexts/material/application/services/parser-manager';
+import { MaterialRepo } from '@/contexts/material/application/ports/out/material-repo';
+import { TextChunker } from '@/contexts/material/application/ports/out/text-chunker';
+import { EmbeddingProvider } from '@/contexts/material/application/ports/out/embedding-provider';
+import { Summarizer } from '@/contexts/material/application/ports/out/summarizer';
+import { VectorRepo } from '@/contexts/material/application/ports/out/vector-repo';
+import { MockParser } from '@/contexts/material/infra/mocks/mock-parser';
+import { UserUpload } from '@/contexts/material/entities/user-upload';
+import { InMemoryMaterialRepo } from '@/contexts/material/infra/mocks/in-memory-material-repo';
+import { RecursiveTextChunker } from '@/contexts/material/infra/chunking/recursive-text-chunker';
+import { MockEmbeddingProvider } from '@/contexts/material/infra/mocks/mock-embedding-provider';
+import { MockSummarizer } from '@/contexts/material/infra/mocks/mock-summarizer';
+import { InMemoryVectorRepo } from '@/contexts/material/infra/mocks/in-memory-vector-repo';
 
 describe('upload material use case', () => {
     let useCase: UploadMaterialUseCase;
