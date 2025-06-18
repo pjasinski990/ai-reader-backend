@@ -2,9 +2,8 @@ import express, { Request, Router } from 'express';
 import { z } from 'zod';
 import { UserUpload } from '@/contexts/material/entities/user-upload';
 import { materialController } from '@/contexts/material/interface/controllers/material-controller';
-import { ValidationError } from '@/shared/entities/validation-error';
 import { asyncWrapper } from '@/shared/utils/async-wrapper';
-import { MissingResourceError } from '@/shared/entities/missing-resource-error';
+import { MissingResourceError, ValidationError } from '@/shared/entities/http-errors';
 
 export const materialRoutes = Router();
 
