@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { UnauthorizedError } from '@/shared/entities/http-errors';
 import { JwtPayloadSchema } from '@/contexts/auth/entities/jwt-payload';
 import jwt from 'jsonwebtoken';
-import '../types/express';
 
 function getTokenFromHeader(header?: string): string | null {
     if (!header || !header.startsWith('Bearer ')) return null;

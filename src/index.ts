@@ -10,15 +10,14 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
-app.use(expressJwtAuth);
-
-app.use('/api/account', accountRoutes);
 app.use('/api/auth', authRoutes);
+
+app.use(expressJwtAuth);
+app.use('/api/account', accountRoutes);
 app.use('/api/material', materialRoutes);
 app.use('/api/project', projectRoutes);
 
 app.use(expressErrorHandler);
-
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
