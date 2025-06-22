@@ -1,9 +1,9 @@
 import { ProjectRepo } from '@/contexts/project/application/ports/out/project-repo';
-import { Project } from '@/contexts/project/entities/project';
+import { UiProject } from '@/contexts/project/entities/ui-project';
 
 export interface GetUserProjects {
     execute(
         repo: ProjectRepo,
-        userId: string
-    ): Promise<Project[]>;
+        userId: string,
+    ): Promise<UiProject[]>;
 }
