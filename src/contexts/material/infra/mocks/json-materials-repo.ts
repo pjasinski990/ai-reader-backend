@@ -22,6 +22,11 @@ export class JsonMaterialRepo implements MaterialRepo {
         return material;
     }
 
+    async getByIds(ids: string[]): Promise<Material[]> {
+        const materials = await this.readAll();
+        return materials.filter(m => ids.includes(m.id));
+    }
+
     async getAll(): Promise<Material[]> {
         return this.readAll();
     }

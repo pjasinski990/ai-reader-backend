@@ -1,6 +1,7 @@
+export type ContentType = 'text' | 'image' | 'audio' | 'video';
+
 export interface MaterialPreview {
     id: string;
-    name: string;
-    description: string;
-    type: 'image' | 'video' | 'audio' | 'text';
+    title: string;
+    type: ContentType;
 }

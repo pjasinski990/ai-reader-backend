@@ -26,7 +26,6 @@ materialRoutes.post(
 materialRoutes.get(
     '/',
     asyncWrapper(async (req, res) => {
-        console.log('Get all materials');
         const materials = await materialController.getAllMaterials();
         res.status(200).json(materials);
     }),
@@ -35,7 +34,6 @@ materialRoutes.get(
 materialRoutes.get(
     '/:id',
     asyncWrapper(async (req, res) => {
-        console.log('Get material');
         const materials = await materialController.getMaterialsByIds([req.params.id]);
         if (!materials[0]) {
             throw new MissingResourceError(`Material id: ${req.params.id} not found`);

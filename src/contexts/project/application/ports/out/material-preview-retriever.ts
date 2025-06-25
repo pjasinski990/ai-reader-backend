@@ -1,5 +1,5 @@
 import { MaterialPreview } from '@/contexts/project/entities/material-preview';
 
-export interface MaterialRetriever {
+export interface MaterialPreviewRetriever {
     execute(ids: string[]): Promise<MaterialPreview[]>;
 }

@@ -11,5 +11,3 @@ conversationRoutes.post('/', (req, res) => {
     res.send('add conversation');
     // parse body, call controller
 });
-
-export default conversationRoutes;

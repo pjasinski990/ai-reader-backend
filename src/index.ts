@@ -4,7 +4,11 @@ import { authRoutes } from '@/contexts/auth/interface/web/auth-routes';
 import { projectRoutes } from '@/contexts/project/interface/web/project-routes';
 import { materialRoutes } from '@/contexts/material/interface/web/material-routes';
 import { expressErrorHandler } from '@/middleware/express-error-handler';
-import { expressJwtAuth } from '@/middleware/express-jwt-auth';
+import { quizRoutes } from '@/contexts/quiz/interface/web/quiz-routes';
+import { conversationRoutes } from '@/contexts/conversation/interface/web/conversation-routes';
+import { BuildAuthMiddlewareUseCase } from '@/contexts/auth/application/use-cases/build-auth-middleware';
+import { getTokenFromHeader } from '@/contexts/auth/application/services/get-token-strategy';
+import { mockJwtVerify } from '@/contexts/auth/application/services/jwt-verify-strategy';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,9 +16,12 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 
-app.use(expressJwtAuth);
+const auth = new BuildAuthMiddlewareUseCase().execute(getTokenFromHeader, mockJwtVerify);
+app.use(auth);
 app.use('/api/account', accountRoutes);
 app.use('/api/material', materialRoutes);
+app.use('/api/quiz', quizRoutes);
+app.use('/api/conversation', conversationRoutes);
 app.use('/api/project', projectRoutes);
 
 app.use(expressErrorHandler);
