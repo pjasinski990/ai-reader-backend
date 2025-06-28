@@ -1,11 +1,14 @@
-import { LearningRoadmap } from '@/contexts/project/entities/learning-roadmap';
+import { LearningRoadmapSchema } from '@/contexts/project/entities/learning-roadmap';
+import { z } from 'zod';
 
-export interface Project {
-    id: string;
-    ownerId: string;
-    title: string;
-    roadmap: LearningRoadmap;
-    materialIds: string[];
-    conversationIds: string[];
-    quizIds: string[];
-}
+export const ProjectSchema = z.object({
+    id: z.string(),
+    ownerId: z.string(),
+    title: z.string(),
+    roadmap: LearningRoadmapSchema,
+    materialIds: z.array(z.string()),
+    conversationIds: z.array(z.string()),
+    quizIds: z.array(z.string()),
+});
+
+export type Project = z.infer<typeof ProjectSchema>;

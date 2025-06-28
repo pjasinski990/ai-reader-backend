@@ -1,7 +1,10 @@
-import { LearningCheckpoint } from './learning-checkpoint';
+import z from 'zod';
+import { LearningCheckpointSchema } from './learning-checkpoint';
 
-export interface LearningRoadmap {
-    id: string;
-    title: string;
-    checkpoints: LearningCheckpoint[];
-}
+export const LearningRoadmapSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    checkpoints: z.array(LearningCheckpointSchema),
+});
+
+export type LearningRoadmap = z.infer<typeof LearningRoadmapSchema>;
