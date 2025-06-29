@@ -35,6 +35,6 @@ function parseProjectFrom(req: Request): Project {
 
 function validateAccess(auth: JwtPayload, project: Project) {
     if (auth.userId !== project.ownerId) {
-        throw new UnauthorizedError('You must be the owner');
+        throw new UnauthorizedError(`You must be the owner. Logged as: ${auth.userId}, specified: ${project.ownerId}`);
     }
 }

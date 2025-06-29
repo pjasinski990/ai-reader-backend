@@ -18,6 +18,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.11.0",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "gpt-tokenizer": "^3.0.1",
     "jsonwebtoken": "^9.0.2",
@@ -32,6 +33,7 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.29.0",
     "@testing-library/jest-dom": "^6.6.3",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mime-types": "^3.0.1",

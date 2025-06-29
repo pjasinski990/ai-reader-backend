@@ -9,11 +9,17 @@ import { conversationRoutes } from '@/contexts/conversation/interface/web/conver
 import { BuildAuthMiddlewareUseCase } from '@/contexts/auth/application/use-cases/build-auth-middleware';
 import { getTokenFromHeader } from '@/contexts/auth/application/services/get-token-strategy';
 import { mockJwtVerify } from '@/contexts/auth/application/services/jwt-verify-strategy';
+import cors from 'cors';
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
+
 app.use('/api/auth', authRoutes);
 
 const auth = new BuildAuthMiddlewareUseCase().execute(getTokenFromHeader, mockJwtVerify);
