@@ -5,7 +5,7 @@ export class InMemoryProjectRepo implements ProjectRepo {
     private projects: Project[] = [];
 
     upsert(project: Project): Promise<void> {
-        const target = this.projects.find((c) => c.id === c.id);
+        const target = this.projects.find((c) => project.id === c.id);
         if (!target) {
             this.projects.push(project);
         } else {
