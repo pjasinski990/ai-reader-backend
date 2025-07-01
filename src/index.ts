@@ -7,14 +7,15 @@ import { expressErrorHandler } from '@/middleware/express-error-handler';
 import { quizRoutes } from '@/contexts/quiz/interface/web/quiz-routes';
 import { conversationRoutes } from '@/contexts/conversation/interface/web/conversation-routes';
 import { BuildAuthMiddlewareUseCase } from '@/contexts/auth/application/use-cases/build-auth-middleware';
-import { getTokenFromHeader } from '@/contexts/auth/application/services/get-token-strategy';
-import { mockJwtVerify } from '@/contexts/auth/application/services/jwt-verify-strategy';
 import cors from 'cors';
+import { extractAccessTokenFromCookie, verifyJwtAccessToken } from '@/contexts/auth/application/services/access-token-strategies';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,
@@ -22,7 +23,7 @@ app.use(cors({
 
 app.use('/api/auth', authRoutes);
 
-const auth = new BuildAuthMiddlewareUseCase().execute(getTokenFromHeader, mockJwtVerify);
+const auth = new BuildAuthMiddlewareUseCase().execute(extractAccessTokenFromCookie, verifyJwtAccessToken);
 app.use(auth);
 app.use('/api/account', accountRoutes);
 app.use('/api/material', materialRoutes);

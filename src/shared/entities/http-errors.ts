@@ -1,4 +1,5 @@
 export class HttpError extends Error {
+    details: unknown;
     status: number;
     constructor(status: number, message: string) {
         super(message);
@@ -19,10 +20,15 @@ export class ForbiddenError extends HttpError {
 }
 
 export class MissingResourceError extends HttpError {
-    details: unknown;
     constructor(message: string, details?: unknown) {
         super(404, message);
         this.details = details;
+    }
+}
+
+export class InternalServerError extends HttpError {
+    constructor(message = 'Internal Server Error') {
+        super(500, message);
     }
 }
 

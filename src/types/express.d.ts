@@ -1,9 +1,9 @@
-import { JwtPayload } from '@/contexts/auth/entities/jwt-payload';
+import { AccessTokenPayload } from '@/contexts/auth/entities/access-token-payload';
 
 declare global {
     namespace Express {
         interface Request {
-            user?: JwtPayload;
+            jwt?: AccessTokenPayload;
         }
     }
 }

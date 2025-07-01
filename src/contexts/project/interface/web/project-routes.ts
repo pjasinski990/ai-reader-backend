@@ -1,14 +1,14 @@
 import { Request, Router } from 'express';
 import { projectController } from '@/contexts/project/interface/controllers/project-controller';
 import { Project, ProjectSchema } from '@/contexts/project/entities/project';
-import { UnauthorizedError, ValidationError } from '@/shared/entities/http-errors';
+import { ForbiddenError, ValidationError } from '@/shared/entities/http-errors';
 import { asyncWrapper } from '@/shared/utils/async-wrapper';
-import { JwtPayload } from '@/contexts/auth/entities/jwt-payload';
+import { AccessTokenPayload } from '@/contexts/auth/entities/access-token-payload';
 
 export const projectRoutes = Router();
 
 projectRoutes.get('/', async (req, res) => {
-    const authenticatedUser = req.user!;
+    const authenticatedUser = req.jwt!;
     const projects = await projectController.handleGetUserProjects(authenticatedUser.userId);
     res.json(projects);
 });
@@ -16,8 +16,8 @@ projectRoutes.get('/', async (req, res) => {
 projectRoutes.post(
     '/',
     asyncWrapper(async (req, res) => {
-        const authenticatedUser = req.user!;
-        const project = parseProjectFrom(req);
+        const authenticatedUser = req.jwt!;
+        const project = parseProject(req);
         validateAccess(authenticatedUser, project);
 
         await projectController.handleAddProject(project);
@@ -25,16 +25,16 @@ projectRoutes.post(
     }),
 );
 
-function parseProjectFrom(req: Request): Project {
+function parseProject(req: Request): Project {
     const parseResult = ProjectSchema.safeParse(req.body);
     if (!parseResult.success) {
         throw new ValidationError('Invalid new project request', parseResult.error.flatten());
     }
-    return parseResult.data as Project;
+    return parseResult.data;
 }
 
-function validateAccess(auth: JwtPayload, project: Project) {
+function validateAccess(auth: AccessTokenPayload, project: Project) {
     if (auth.userId !== project.ownerId) {
-        throw new UnauthorizedError(`You must be the owner. Logged as: ${auth.userId}, specified: ${project.ownerId}`);
+        throw new ForbiddenError(`You must be the owner. Logged as: ${auth.userId}, specified: ${project.ownerId}`);
     }
 }
