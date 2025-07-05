@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
-import { ValidationError } from '@/shared/entities/http-errors';
+import { HttpError } from '@/shared/entities/http-errors';
 
 export const expressErrorHandler = ((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     void req;
     void _next;
 
-    if (err instanceof ValidationError) {
+    if (err instanceof HttpError) {
         res.status(err.status).json({
             error: err.message,
             details: err.details

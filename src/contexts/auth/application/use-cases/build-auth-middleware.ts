@@ -1,27 +1,30 @@
-import { GetTokenStrategy, JwtVerifyStrategy } from '@/contexts/auth/entities/strategies';
+import { ExtractTokenStrategy, VerifyAccessTokenStrategy } from '@/contexts/auth/entities/auth-strategy';
 import { NextFunction, Request, Response } from 'express';
-import { UnauthorizedError } from '@/shared/entities/http-errors';
-import jwt from 'jsonwebtoken';
-import { JwtPayloadSchema } from '@/contexts/auth/entities/jwt-payload';
+import { InternalServerError, UnauthorizedError } from '@/shared/entities/http-errors';
 import { BuildAuthMiddleware } from '@/contexts/auth/application/ports/in/build-auth-middleware';
 import { AuthMiddleware } from '@/contexts/auth/entities/auth-middleware';
 
 export class BuildAuthMiddlewareUseCase implements BuildAuthMiddleware {
-    execute(getToken: GetTokenStrategy, jwtVerify: JwtVerifyStrategy): AuthMiddleware {
-        return (req: Request, _res: Response, next: NextFunction): void => {
-            const token = getToken(req);
-            if (!token) return next(new UnauthorizedError('Missing Bearer token'));
+    execute(getToken: ExtractTokenStrategy, verifyToken: VerifyAccessTokenStrategy): AuthMiddleware {
+        return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+            void res;
 
-            const resCheck = jwtVerify(token, process.env.JWT_SECRET as string);
-            if (!resCheck.ok) return next(new UnauthorizedError(resCheck.message));
+            const token = await getToken(req);
+            if (!token) return next(new UnauthorizedError('Missing access token'));
 
-            const decoded = jwt.decode(token);
-            const parsed = JwtPayloadSchema.safeParse(decoded);
-            if (!parsed.success) {
-                return next(new UnauthorizedError('Malformed token payload'));
+            const resCheck = await verifyToken(token);
+            if (!resCheck.ok) {
+                return next(new UnauthorizedError(resCheck.error));
             }
 
-            req.user = parsed.data;
+            if (!(resCheck.authType === 'jwt')) {
+                return next(new InternalServerError('Unexpected authorization result type'));
+            }
+            if (resCheck.expired) {
+                return next(new UnauthorizedError('Access token expired'));
+            }
+
+            req.authToken = resCheck.payload;
             next();
         };
     }

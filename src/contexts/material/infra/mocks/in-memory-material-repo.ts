@@ -21,4 +21,9 @@ export class InMemoryMaterialRepo implements MaterialRepo {
         this.materials = [];
         return Promise.resolve();
     }
+
+    getByIds(ids: string[]): Promise<Material[]> {
+        const res = this.materials.filter(m => ids.includes(m.id));
+        return Promise.resolve(res);
+    }
 }

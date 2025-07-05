@@ -1,6 +1,6 @@
 import { AuthMiddleware } from '@/contexts/auth/entities/auth-middleware';
-import { JwtVerifyStrategy } from '@/contexts/auth/entities/strategies';
+import { VerifyAccessTokenStrategy } from '@/contexts/auth/entities/auth-strategy';
 
 export interface BuildAuthMiddleware {
-    execute(getToken: GetTokenStrategy, strategy: JwtVerifyStrategy): AuthMiddleware;
+    execute(getToken: GetTokenStrategy, strategy: VerifyAccessTokenStrategy): AuthMiddleware;
 }
