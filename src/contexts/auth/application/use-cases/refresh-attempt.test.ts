@@ -1,4 +1,4 @@
-import { vi, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RefreshAttemptUseCase } from '@/contexts/auth/application/use-cases/refresh-attempt';
 import { RefreshTokenService } from '@/contexts/auth/application/services/refresh-token-service';
 import { AuthDescription } from '@/contexts/auth/entities/auth-description';

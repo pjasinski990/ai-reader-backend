@@ -1,4 +1,9 @@
-import { CreateAccessTokenStrategy, ExtractTokenStrategy, SetTokenStrategy, VerifyAccessTokenStrategy } from '@/contexts/auth/entities/auth-strategy';
+import {
+    CreateAccessTokenStrategy,
+    ExtractTokenStrategy,
+    SetTokenStrategy,
+    VerifyAccessTokenStrategy
+} from '@/contexts/auth/entities/auth-strategy';
 import { AccessTokenPayload, AccessTokenPayloadSchema } from '@/contexts/auth/entities/access-token-payload';
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import { CookieOptions, Request, Response } from 'express';

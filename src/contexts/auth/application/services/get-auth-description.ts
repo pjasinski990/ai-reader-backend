@@ -1,10 +1,13 @@
 import { AuthDescription } from '@/contexts/auth/entities/auth-description';
 import {
-    createJwtAccessToken, extractAccessTokenFromCookie,
-    setAccessTokenToCookie, verifyJwtAccessToken
+    createJwtAccessToken,
+    extractAccessTokenFromCookie,
+    setAccessTokenToCookie,
+    verifyJwtAccessToken
 } from '@/contexts/auth/application/services/access-token-strategies';
 import {
-    createRandomToken, extractRefreshTokenFromCookie,
+    createRandomToken,
+    extractRefreshTokenFromCookie,
     setRefreshTokenToCookie
 } from '@/contexts/auth/application/services/refresh-token-strategies';
 import { bcryptHashStrategy, bcryptVerifyStrategy } from '@/contexts/auth/application/services/password-strategies';

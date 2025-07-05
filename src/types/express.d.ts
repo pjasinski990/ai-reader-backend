@@ -3,7 +3,7 @@ import { AccessTokenPayload } from '@/contexts/auth/entities/access-token-payloa
 declare global {
     namespace Express {
         interface Request {
-            jwt?: AccessTokenPayload;
+            authToken?: AccessTokenPayload;
         }
     }
 }

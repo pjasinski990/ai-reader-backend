@@ -24,7 +24,7 @@ export class BuildAuthMiddlewareUseCase implements BuildAuthMiddleware {
                 return next(new UnauthorizedError('Access token expired'));
             }
 
-            req.jwt = resCheck.payload;
+            req.authToken = resCheck.payload;
             next();
         };
     }

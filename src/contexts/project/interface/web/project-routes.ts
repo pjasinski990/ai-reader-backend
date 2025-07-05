@@ -8,7 +8,7 @@ import { AccessTokenPayload } from '@/contexts/auth/entities/access-token-payloa
 export const projectRoutes = Router();
 
 projectRoutes.get('/', async (req, res) => {
-    const authenticatedUser = req.jwt!;
+    const authenticatedUser = req.authToken!;
     const projects = await projectController.handleGetUserProjects(authenticatedUser.userId);
     res.json(projects);
 });
@@ -16,7 +16,7 @@ projectRoutes.get('/', async (req, res) => {
 projectRoutes.post(
     '/',
     asyncWrapper(async (req, res) => {
-        const authenticatedUser = req.jwt!;
+        const authenticatedUser = req.authToken!;
         const project = parseProject(req);
         validateAccess(authenticatedUser, project);
 

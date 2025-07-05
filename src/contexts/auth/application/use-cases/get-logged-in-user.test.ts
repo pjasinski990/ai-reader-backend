@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { GetLoggedInUserUseCase } from '@/contexts/auth/application/use-cases/get-logged-in-user';
 import { InMemoryUserRepo } from '@/contexts/auth/infra/in-memory-user-repo';
 import { AuthDescription } from '@/contexts/auth/entities/auth-description';

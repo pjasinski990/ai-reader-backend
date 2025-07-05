@@ -1,6 +1,6 @@
-import { beforeEach, describe, vi, it, expect } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-    AuthVerifyError, AuthVerifyResult,
+    AuthVerifyResult,
     CreateAccessTokenStrategy,
     JwtVerifyOk,
     VerifyAccessTokenStrategy
