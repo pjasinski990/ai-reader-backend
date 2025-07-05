@@ -17,7 +17,7 @@ describe('GetLoggedInUserUseCase', () => {
         id: 'someUser',
         email: 'bob@email.com',
         passwordHash: 'verySecret',
-    } as User;
+    };
 
     beforeEach(() => {
         userRepo = new InMemoryUserRepo();
@@ -80,7 +80,7 @@ function okAccessTokenVerifyResponse(payload: AccessTokenPayload): JwtVerifyOk {
     return {
         ok: true,
         authType: 'jwt',
-        expired: true,
+        expired: false,
         payload,
     };
 }
