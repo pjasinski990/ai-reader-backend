@@ -7,7 +7,8 @@ import { AuthDescription } from '@/contexts/auth/entities/auth-description';
 import { getAuthDescription } from '@/contexts/auth/application/services/get-auth-description';
 import { plainHashStrategy, plainVerifyStrategy } from '@/contexts/auth/application/services/password-strategies';
 import { User } from '@/contexts/auth/entities/user';
-import { LoginFailed, LoginOk, LoginResult } from '@/contexts/auth/entities/login-result';
+import { AuthData } from '@/contexts/auth/entities/login-result';
+import { expectResultError, expectResultOk } from '@/shared/infra/testing/assertions';
 
 describe('login attempt use case', () => {
     let authDescription: AuthDescription;
@@ -39,38 +40,38 @@ describe('login attempt use case', () => {
 
         const result = await useCase.execute(testUser.email, testUser.passwordHash);
 
-        expectLoginOk(result);
-        expect(result.accessToken).toBe('dummy-access-token');
-        expect(result.refreshToken).toBe('dummy-refresh-token');
-        expect(result.userId).toBe(testUser.id);
+        expectResultOk<AuthData>(result);
+        expect(result.value.accessToken).toBe('dummy-access-token');
+        expect(result.value.refreshToken).toBe('dummy-refresh-token');
+        expect(result.value.userId).toBe(testUser.id);
     });
 
     it('should fail when user does not exist', async () => {
         const result = await useCase.execute('notfound@email.com', 'irrelevant');
-        expectLoginFailed(result);
+        expectResultError<string>(result);
         expect(result.error).toBe('User does not exist');
     });
 
     it('should fail with wrong password', async () => {
         await userRepo.upsert(testUser);
         const result = await useCase.execute(testUser.email, 'wrongPassword');
-        expectLoginFailed(result);
+        expectResultError<string>(result);
         expect(result.error).toBe('Invalid password');
     });
 
     it('should fail if password is empty', async () => {
         await userRepo.upsert(testUser);
         const result = await useCase.execute(testUser.email, '');
-        expectLoginFailed(result);
+        expectResultError<string>(result);
         expect(result.error).toBe('Invalid password');
     });
 
     it('should return correct tokens on success', async () => {
         await userRepo.upsert(testUser);
         const result = await useCase.execute(testUser.email, testUser.passwordHash);
-        expectLoginOk(result);
-        expect(result.accessToken).toBe('dummy-access-token');
-        expect(result.refreshToken).toBe('dummy-refresh-token');
+        expectResultOk<AuthData>(result);
+        expect(result.value.accessToken).toBe('dummy-access-token');
+        expect(result.value.refreshToken).toBe('dummy-refresh-token');
     });
 
     it('should not create tokens on failed login', async () => {
@@ -82,11 +83,3 @@ describe('login attempt use case', () => {
         expect(refreshSpy).not.toHaveBeenCalled();
     });
 });
-
-function expectLoginFailed(result: LoginResult): asserts result is LoginFailed {
-    expect(result.ok).toBe(false);
-}
-
-function expectLoginOk(result: LoginResult): asserts result is LoginOk {
-    expect(result.ok).toBe(true);
-}

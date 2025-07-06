@@ -1,5 +1,7 @@
 // TODO move to service
-export type QuestionValidationResult = { ok: true } | { ok: false; feedback?: string };
+import { Result } from '@/shared/entities/result';
+
+export type QuestionValidationResult = Result<void, string>
 
 export interface QuestionServices {
     validate(question: Question, userAnswer: Answer, context?: string): Promise<QuestionValidationResult>;

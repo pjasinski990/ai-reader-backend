@@ -6,13 +6,13 @@ import { TextChunker } from '@/contexts/material/application/ports/out/text-chun
 import { EmbeddingProvider } from '@/contexts/material/application/ports/out/embedding-provider';
 import { Summarizer } from '@/contexts/material/application/ports/out/summarizer';
 import { VectorRepo } from '@/contexts/material/application/ports/out/vector-repo';
-import { MockParser } from '@/contexts/material/infra/mocks/mock-parser';
+import { MockParser } from '@/contexts/material/infra/testing/mock-parser';
 import { UserUpload } from '@/contexts/material/entities/user-upload';
-import { InMemoryMaterialRepo } from '@/contexts/material/infra/mocks/in-memory-material-repo';
+import { InMemoryMaterialRepo } from '@/contexts/material/infra/testing/in-memory-material-repo';
 import { RecursiveTextChunker } from '@/contexts/material/infra/chunking/recursive-text-chunker';
-import { MockEmbeddingProvider } from '@/contexts/material/infra/mocks/mock-embedding-provider';
-import { MockSummarizer } from '@/contexts/material/infra/mocks/mock-summarizer';
-import { InMemoryVectorRepo } from '@/contexts/material/infra/mocks/in-memory-vector-repo';
+import { MockEmbeddingProvider } from '@/contexts/material/infra/testing/mock-embedding-provider';
+import { MockSummarizer } from '@/contexts/material/infra/testing/mock-summarizer';
+import { InMemoryVectorRepo } from '@/contexts/material/infra/testing/in-memory-vector-repo';
 
 describe('upload material use case', () => {
     let useCase: UploadMaterialUseCase;

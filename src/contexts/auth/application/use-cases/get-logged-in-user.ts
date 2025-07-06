@@ -4,6 +4,7 @@ import { UserRepo } from '@/contexts/auth/application/ports/out/user-repo';
 import { extractUserId } from '@/contexts/auth/application/services/access-token-utils';
 import { PublicUserData, WhoAmIResult } from '@/contexts/auth/entities/who-am-i-result';
 import { User } from '@/contexts/auth/entities/user';
+import { nok, ok } from '@/shared/entities/result';
 
 export class GetLoggedInUserUseCase implements GetLoggedInUser {
     constructor(
@@ -14,16 +15,16 @@ export class GetLoggedInUserUseCase implements GetLoggedInUser {
     async execute(accessToken: string): Promise<WhoAmIResult> {
         const userId = await extractUserId(accessToken, this.authDescription.verifyAccessToken);
         if (!userId) {
-            return { ok: false, error: 'Malformed access token' };
+            return nok<string>('Malformed access token');
         }
 
         const user = await this.userRepo.getById(userId);
         if (!user) {
-            return { ok: false, error: `No such user: ${userId}` };
+            return nok<string>(`No such user: ${userId}`);
         }
 
         const userData = toPublicUserData(user);
-        return { ok: true, user: userData };
+        return ok<PublicUserData>(userData);
     }
 }
 

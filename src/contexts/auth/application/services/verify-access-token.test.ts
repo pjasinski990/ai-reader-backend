@@ -1,14 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import {
-    AuthVerifyResult,
-    CreateAccessTokenStrategy,
-    JwtVerifyOk,
-    VerifyAccessTokenStrategy
-} from '@/contexts/auth/entities/auth-strategy';
-import {
-    createJwtAccessToken,
-    verifyJwtAccessToken
-} from '@/contexts/auth/application/services/access-token-strategies';
+import { AuthenticatedData, CreateAccessTokenStrategy, JwtAuthenticatedData, VerifyAccessTokenStrategy } from '@/contexts/auth/entities/auth-strategy';
+import { createJwtAccessToken, verifyJwtAccessToken } from '@/contexts/auth/application/services/access-token-strategies';
+import { expectResultOk } from '@/shared/infra/testing/assertions';
 
 describe('verify jwt token', () => {
     const userId = 'someUser';
@@ -25,8 +18,9 @@ describe('verify jwt token', () => {
 
         const result = await verifyJwtStrat(token);
 
-        expectResultOk(result);
-        expect(result.payload.userId).toBe(userId);
+        expectResultOk<AuthenticatedData>(result);
+        expectIsJwtAuth(result.value);
+        expect(result.value.payload.userId).toBe(userId);
     });
 
     it('should not expire token before 15 minutes', async () => {
@@ -36,8 +30,9 @@ describe('verify jwt token', () => {
 
         const result = await verifyJwtStrat(token);
 
-        expectResultOk(result);
-        expect(result.expired).toBe(false);
+        expectResultOk<AuthenticatedData>(result);
+        expectIsJwtAuth(result.value);
+        expect(result.value.expired).toBe(false);
     });
 
     it('should expire token after 15 minutes', async () => {
@@ -47,8 +42,9 @@ describe('verify jwt token', () => {
 
         const result = await verifyJwtStrat(token);
 
-        expectResultOk(result);
-        expect(result.expired).toBe(true);
+        expectResultOk<AuthenticatedData>(result);
+        expectIsJwtAuth(result.value);
+        expect(result.value.expired).toBe(true);
     });
 });
 
@@ -58,6 +54,6 @@ function skipTime(amountMs: number) {
     vi.spyOn(Date, 'now').mockReturnValue(later);
 }
 
-function expectResultOk(result: AuthVerifyResult): asserts result is JwtVerifyOk {
-    expect(result.ok).toBe(true);
+function expectIsJwtAuth(result: AuthenticatedData): asserts result is JwtAuthenticatedData {
+    expect(result.authType).toBe('jwt');
 }

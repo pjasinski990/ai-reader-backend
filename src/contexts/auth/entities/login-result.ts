@@ -1,13 +1,9 @@
-export interface LoginOk {
-    ok: true;
+import { Result } from '@/shared/entities/result';
+
+export interface AuthData {
     userId: string;
     accessToken: string;
     refreshToken: string;
 }
 
-export interface LoginFailed {
-    ok: false;
-    error: string;
-}
-
-export type LoginResult = LoginOk | LoginFailed;
+export type LoginResult = Result<AuthData, string>

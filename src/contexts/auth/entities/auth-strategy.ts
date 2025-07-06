@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 import { AccessTokenPayload } from '@/contexts/auth/entities/access-token-payload';
+import { Result } from '@/shared/entities/result';
 
-export type AuthVerifyOk = { ok: true, authType: 'generic' }
-export type JwtVerifyOk = { ok: true, authType: 'jwt', payload: AccessTokenPayload, expired: boolean }
-export type AuthVerifyError = { ok: false, error: string };
-
-export type AuthVerifyResult = AuthVerifyError | AuthVerifyOk | JwtVerifyOk;
+export interface AuthenticatedData { authType: string; }
+export interface GenericAuthenticatedData extends AuthenticatedData { authType: 'generic'; }
+export interface JwtAuthenticatedData extends AuthenticatedData {
+    authType: 'jwt';
+    payload: AccessTokenPayload;
+    expired: boolean;
+}
+export type AuthVerifyResult = Result<AuthenticatedData, string>
 
 export type CreateAccessTokenStrategy = (ownerId: string) => Promise<string>;
 export type VerifyAccessTokenStrategy = (token: string) => Promise<AuthVerifyResult>;

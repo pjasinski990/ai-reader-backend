@@ -7,7 +7,7 @@ import { ContentExtractionStrategy } from '@/contexts/quiz/application/ports/out
 import { GetQuizzesUseCase } from '../../application/use-cases/get-quizzes';
 import { CreateQuizFromMaterialUseCase } from '../../application/use-cases/create-quiz-from-material';
 import { InMemoryQuizRepo } from '../../infra/in-memory-quiz-repo';
-import { JsonMaterialRepo } from '@/contexts/material/infra/mocks/json-materials-repo';
+import { JsonMaterialRepo } from '@/contexts/material/infra/testing/json-materials-repo';
 import { BasicContentExtractionStrategy } from '../../infra/content-extraction/basic-content-extraction-strategy';
 import { OpenAIQuizProvider } from '../../infra/llms/openai-quiz-provider';
 import { OpenAIStructuredProvider } from '@/shared/infra/llms/open-ai-structured-provider';

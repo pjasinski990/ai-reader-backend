@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Random } from '@/shared/infra/mocks/random';
+import { Random } from '@/shared/infra/testing/random';
 import { Message, Role } from '@/shared/ports/out/llm-provider';
 
 export class MockMessage {
