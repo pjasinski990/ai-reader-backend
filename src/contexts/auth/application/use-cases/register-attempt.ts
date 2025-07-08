@@ -15,17 +15,17 @@ export class RegisterAttemptUseCase implements RegisterAttempt {
 
     async execute(email: string, password: string): Promise<RegisterResult> {
         if (!validator.isEmail(email)) {
-            return nok<string>('Invalid email address');
+            return nok('Invalid email address');
         }
 
         if (password.length < 8) {
-            return nok<string>('Password must be at least 8 characters');
+            return nok('Password must be at least 8 characters');
         }
 
         email = email.toLowerCase();
         const existing = await this.userRepo.getByEmail(email);
         if (existing) {
-            return nok<string>('User with this email address already exists');
+            return nok('User with this email address already exists');
         }
 
         const passwordHash = await this.authDescription.hashPassword(password);

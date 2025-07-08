@@ -14,21 +14,21 @@ export class RefreshAttemptUseCase implements RefreshAttempt {
     async execute(accessToken: string, refreshToken: string): Promise<LoginResult> {
         const userId = await extractUserId(accessToken, this.authDescription.verifyAccessToken);
         if (!userId) {
-            return nok<string>('Malformed access token');
+            return nok('Malformed access token');
         }
 
         const foundRefreshToken = await this.refreshTokenService.find(refreshToken);
         if (!foundRefreshToken) {
-            return nok<string>('Invalid refresh token');
+            return nok('Invalid refresh token');
         }
 
         if (foundRefreshToken.ownerId !== userId) {
-            return nok<string>('Access token mismatch - invalid owner');
+            return nok('Access token mismatch - invalid owner');
         }
 
         await this.refreshTokenService.revoke(foundRefreshToken);
         if (Date.now() > foundRefreshToken.exp) {
-            return nok<string>('Refresh token expired');
+            return nok('Refresh token expired');
         }
 
         const newAccessToken = await this.authDescription.createAccessToken(userId);

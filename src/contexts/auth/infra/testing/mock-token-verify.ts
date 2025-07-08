@@ -14,7 +14,7 @@ export function returnsExpiredAccessTokenWith(payload: AccessTokenPayload): Veri
 
 export function returnsInvalidAccessTokenWith(error: string): VerifyAccessTokenStrategy {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    return async (token: string) => nok<string>(error);
+    return async (token: string) => nok(error);
 }
 
 function okAccessTokenVerifyResponse(payload: AccessTokenPayload, expired: boolean): JwtAuthenticatedData {

@@ -15,12 +15,12 @@ export class GetLoggedInUserUseCase implements GetLoggedInUser {
     async execute(accessToken: string): Promise<WhoAmIResult> {
         const userId = await extractUserId(accessToken, this.authDescription.verifyAccessToken);
         if (!userId) {
-            return nok<string>('Malformed access token');
+            return nok('Malformed access token');
         }
 
         const user = await this.userRepo.getById(userId);
         if (!user) {
-            return nok<string>(`No such user: ${userId}`);
+            return nok(`No such user: ${userId}`);
         }
 
         const userData = toPublicUserData(user);

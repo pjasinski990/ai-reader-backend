@@ -15,12 +15,12 @@ export class LoginAttemptUseCase implements LoginAttempt {
     async execute(email: string, password: string): Promise<LoginResult> {
         const existingUser = await this.userRepo.getByEmail(email);
         if (!existingUser) {
-            return nok<string>('User does not exist');
+            return nok('User does not exist');
         }
 
         const verifyResult = await this.authDescription.verifyPassword(password, existingUser.passwordHash);
         if (!verifyResult.ok) {
-            return nok<string>('Invalid password');
+            return nok('Invalid password');
         }
 
         const accessToken = await this.authDescription.createAccessToken(existingUser.id);

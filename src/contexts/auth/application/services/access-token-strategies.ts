@@ -40,7 +40,7 @@ export const verifyJwtAccessToken: VerifyAccessTokenStrategy = async (token: str
             return ok<JwtAuthenticatedData>({ authType: 'jwt', payload, expired: true });
         }
         const errorMsg = e instanceof Error ? e.message : 'Invalid or expired token';
-        return nok<string>(errorMsg);
+        return nok(errorMsg);
     }
 };
 

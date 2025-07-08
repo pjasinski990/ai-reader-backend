@@ -4,7 +4,7 @@ import { nok, ok } from '@/shared/entities/result';
 
 export const bcryptVerifyStrategy: VerifyPasswordStrategy = async (password: string, hash: string) => {
     const match = await bcrypt.compare(password, hash);
-    return match ? ok<GenericAuthenticatedData>({ authType: 'generic' }) : nok<string>('Invalid password');
+    return match ? ok<GenericAuthenticatedData>({ authType: 'generic' }) : nok('Invalid password');
 };
 
 export const bcryptHashStrategy: HashPasswordStrategy = async (password: string) => {
@@ -14,7 +14,7 @@ export const bcryptHashStrategy: HashPasswordStrategy = async (password: string)
 
 export const plainVerifyStrategy: VerifyPasswordStrategy = async (password: string, hash: string) => {
     const match = password === hash;
-    return match ? ok<GenericAuthenticatedData>({ authType: 'generic' }) : nok<string>('Invalid password');
+    return match ? ok<GenericAuthenticatedData>({ authType: 'generic' }) : nok('Invalid password');
 };
 
 export const plainHashStrategy: HashPasswordStrategy = async (password: string) => {
