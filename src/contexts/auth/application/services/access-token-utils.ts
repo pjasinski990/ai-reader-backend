@@ -1,9 +1,17 @@
-import { VerifyAccessTokenStrategy } from '@/contexts/auth/entities/auth-strategy';
+import {
+    AuthenticatedData,
+    JwtAuthenticatedData,
+    VerifyAccessTokenStrategy
+} from '@/contexts/auth/entities/auth-strategy';
 
 export async function extractUserId(accessToken: string, verifyTokenStrat: VerifyAccessTokenStrategy) {
     const verifyResult = await verifyTokenStrat(accessToken);
-    if (verifyResult.ok && verifyResult.authType === 'jwt') {
-        return verifyResult.payload.userId;
+    if (verifyResult.ok && isJwtAuthenticatedData(verifyResult.value)) {
+        return verifyResult.value.payload.userId;
     }
     return null;
+}
+
+export function isJwtAuthenticatedData(data: AuthenticatedData): data is JwtAuthenticatedData {
+    return data.authType === 'jwt';
 }

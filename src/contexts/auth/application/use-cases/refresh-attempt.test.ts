@@ -1,13 +1,17 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { RefreshAttemptUseCase } from '@/contexts/auth/application/use-cases/refresh-attempt';
 import { RefreshTokenService } from '@/contexts/auth/application/services/refresh-token-service';
 import { AuthDescription } from '@/contexts/auth/entities/auth-description';
 import { InMemoryRefreshTokenRepo } from '@/contexts/auth/infra/in-memory-refresh-token-repo';
 import { RefreshTokenRepo } from '@/contexts/auth/application/ports/out/refresh-token-repo';
 import { getAuthDescription } from '@/contexts/auth/application/services/get-auth-description';
-import { AuthVerifyError, JwtVerifyOk } from '@/contexts/auth/entities/auth-strategy';
-import { AccessTokenPayload } from '@/contexts/auth/entities/access-token-payload';
-import { LoginOk, LoginResult } from '@/contexts/auth/entities/login-result';
+import { AuthData } from '@/contexts/auth/entities/login-result';
+import { skipTime } from '@/shared/infra/testing/utils';
+import { expectResultOk } from '@/shared/infra/testing/assertions';
+import {
+    returnsExpiredAccessTokenWith,
+    returnsInvalidAccessTokenWith
+} from '@/contexts/auth/infra/testing/mock-token-verify';
 
 describe('RefreshAttemptUseCase', () => {
     let refreshTokenRepo: RefreshTokenRepo;
@@ -33,7 +37,7 @@ describe('RefreshAttemptUseCase', () => {
     });
 
     it('returns error if userId is not in access token', async () => {
-        authDescription.verifyAccessToken = async (token: string) => invalidAccessTokenVerifyResponse();
+        authDescription.verifyAccessToken = returnsInvalidAccessTokenWith('Invalid token');
 
         const result = await useCase.execute(unusedAccessToken, unusedRefreshToken);
 
@@ -41,7 +45,7 @@ describe('RefreshAttemptUseCase', () => {
     });
 
     it('returns error if refresh token is not owned by userId from access token', async () => {
-        authDescription.verifyAccessToken = async (token: string) => expiredAccessTokenVerifyResponse({ userId: 'susUser' });
+        authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId: 'susUser' });
         const refreshToken = await refreshTokenService.issue(userId);
 
         const result = await useCase.execute(unusedAccessToken, refreshToken);
@@ -50,7 +54,7 @@ describe('RefreshAttemptUseCase', () => {
     });
 
     it('returns error if refresh token is invalid', async () => {
-        authDescription.verifyAccessToken = async (token: string) => expiredAccessTokenVerifyResponse( { userId });
+        authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
 
         const result = await useCase.execute(unusedAccessToken, 'invalidRefresh');
 
@@ -58,7 +62,7 @@ describe('RefreshAttemptUseCase', () => {
     });
 
     it('returns error if refresh token is expired', async () => {
-        authDescription.verifyAccessToken = async (token: string) => expiredAccessTokenVerifyResponse( { userId });
+        authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
         const refreshToken = await refreshTokenService.issue(userId);
         const eightDaysMs = 8 * 24 * 60 * 60 * 1000;
         skipTime(eightDaysMs);
@@ -69,20 +73,20 @@ describe('RefreshAttemptUseCase', () => {
     });
 
     it('returns new valid tokens on valid request', async () => {
-        authDescription.verifyAccessToken = async (token: string) => expiredAccessTokenVerifyResponse( { userId });
+        authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
         const refreshToken = await refreshTokenService.issue(userId);
 
         const result = await useCase.execute(unusedAccessToken, refreshToken);
 
-        expectLoginOk(result);
-        const atVerifyResult = await authDescription.verifyAccessToken(result.accessToken);
-        const rtFound = await refreshTokenService.find(result.refreshToken);
+        expectResultOk<AuthData>(result);
+        const atVerifyResult = await authDescription.verifyAccessToken(result.value.accessToken);
+        const rtFound = await refreshTokenService.find(result.value.refreshToken);
         expect(atVerifyResult.ok).toBe(true);
         expect(rtFound).not.toBeNull();
     });
 
     it('revokes the old refresh token', async () => {
-        authDescription.verifyAccessToken = async (token: string) => expiredAccessTokenVerifyResponse( { userId });
+        authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
         const initialRt = await refreshTokenService.issue(userId);
 
         await useCase.execute(unusedAccessToken, initialRt);
@@ -91,29 +95,3 @@ describe('RefreshAttemptUseCase', () => {
         expect(oldTokenFound).toBeNull();
     });
 });
-
-function expectLoginOk(result: LoginResult): asserts result is LoginOk {
-    expect(result.ok).toBe(true);
-}
-
-function invalidAccessTokenVerifyResponse(): AuthVerifyError {
-    return {
-        ok: false,
-        error: 'Access token invalid'
-    };
-}
-
-function expiredAccessTokenVerifyResponse(payload: AccessTokenPayload): JwtVerifyOk {
-    return {
-        ok: true,
-        authType: 'jwt',
-        expired: true,
-        payload,
-    };
-}
-
-function skipTime(amountMs: number) {
-    const now = Date.now();
-    const later = now + amountMs;
-    vi.spyOn(Date, 'now').mockReturnValue(later);
-}

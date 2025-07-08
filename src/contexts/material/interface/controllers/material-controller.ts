@@ -10,7 +10,7 @@ import { UserUpload } from '@/contexts/material/entities/user-upload';
 import { TxtParser } from '@/contexts/material/infra/parsing/txt-parser';
 import { PdfParser } from '@/contexts/material/infra/parsing/pdf-parser';
 import { RecursiveTextChunker } from '@/contexts/material/infra/chunking/recursive-text-chunker';
-import { JsonMaterialRepo } from '@/contexts/material/infra/mocks/json-materials-repo';
+import { JsonMaterialRepo } from '@/contexts/material/infra/testing/json-materials-repo';
 import { OpenAIEmbeddingProvider } from '@/contexts/material/infra/embedding/openai-embedding-provider';
 import { OpenAIProvider } from '@/shared/infra/llms/open-ai-provider';
 import { JsonVectorRepo } from '@/contexts/material/infra/vector-repo/json-vector-repo';

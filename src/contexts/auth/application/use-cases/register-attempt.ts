@@ -4,6 +4,8 @@ import { UserRepo } from '@/contexts/auth/application/ports/out/user-repo';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthDescription } from '@/contexts/auth/entities/auth-description';
 import validator from 'validator';
+import { nok, ok } from '@/shared/entities/result';
+import { User } from '@/contexts/auth/entities/user';
 
 export class RegisterAttemptUseCase implements RegisterAttempt {
     constructor(
@@ -13,17 +15,17 @@ export class RegisterAttemptUseCase implements RegisterAttempt {
 
     async execute(email: string, password: string): Promise<RegisterResult> {
         if (!validator.isEmail(email)) {
-            return { ok: false, error: 'Invalid email address' };
+            return nok('Invalid email address');
         }
 
         if (password.length < 8) {
-            return { ok: false, error: 'Password must be at least 8 characters' };
+            return nok('Password must be at least 8 characters');
         }
 
         email = email.toLowerCase();
         const existing = await this.userRepo.getByEmail(email);
         if (existing) {
-            return { ok: false, error: 'User with this email address already exists' };
+            return nok('User with this email address already exists');
         }
 
         const passwordHash = await this.authDescription.hashPassword(password);
@@ -34,6 +36,6 @@ export class RegisterAttemptUseCase implements RegisterAttempt {
         };
 
         await this.userRepo.upsert(newUser);
-        return { ok: true, user: newUser };
+        return ok<User>(newUser);
     }
 }

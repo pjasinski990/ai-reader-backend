@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { InternalServerError, UnauthorizedError } from '@/shared/entities/http-errors';
 import { BuildAuthMiddleware } from '@/contexts/auth/application/ports/in/build-auth-middleware';
 import { AuthMiddleware } from '@/contexts/auth/entities/auth-middleware';
+import { isJwtAuthenticatedData } from '@/contexts/auth/application/services/access-token-utils';
 
 export class BuildAuthMiddlewareUseCase implements BuildAuthMiddleware {
     execute(getToken: ExtractTokenStrategy, verifyToken: VerifyAccessTokenStrategy): AuthMiddleware {
@@ -17,14 +18,15 @@ export class BuildAuthMiddlewareUseCase implements BuildAuthMiddleware {
                 return next(new UnauthorizedError(resCheck.error));
             }
 
-            if (!(resCheck.authType === 'jwt')) {
+            if (!isJwtAuthenticatedData(resCheck.value)) {
                 return next(new InternalServerError('Unexpected authorization result type'));
             }
-            if (resCheck.expired) {
+
+            if (resCheck.value.expired) {
                 return next(new UnauthorizedError('Access token expired'));
             }
 
-            req.authToken = resCheck.payload;
+            req.authToken = resCheck.value.payload;
             next();
         };
     }

@@ -10,7 +10,7 @@ import { InAppQuizPreviewRetriever } from '@/contexts/project/infra/in-app-quiz-
 import { GetQuizzesUseCase } from '@/contexts/quiz/application/use-cases/get-quizzes';
 import { InMemoryQuizRepo } from '@/contexts/quiz/infra/in-memory-quiz-repo';
 import { GetMaterialsUseCase } from '@/contexts/material/application/use-cases/get-materials';
-import { JsonMaterialRepo } from '@/contexts/material/infra/mocks/json-materials-repo';
+import { JsonMaterialRepo } from '@/contexts/material/infra/testing/json-materials-repo';
 import { InAppConversationPreviewRetriever } from '@/contexts/project/infra/in-app-conversation-preview-retriever';
 import { GetConversationsUseCase } from '@/contexts/conversation/application/use-cases/get-conversations';
 import { InMemoryConversationRepo } from '@/contexts/conversation/infra/in-memory-conversation-repo';

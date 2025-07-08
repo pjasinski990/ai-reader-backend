@@ -3,10 +3,10 @@ import { RegisterAttemptUseCase } from '@/contexts/auth/application/use-cases/re
 import { InMemoryUserRepo } from '@/contexts/auth/infra/in-memory-user-repo';
 import { AuthDescription } from '@/contexts/auth/entities/auth-description';
 import { getAuthDescription } from '@/contexts/auth/application/services/get-auth-description';
-import { RegisterFailed, RegisterOk, RegisterResult } from '@/contexts/auth/entities/register-result';
 import { UserRepo } from '@/contexts/auth/application/ports/out/user-repo';
 import { User } from '@/contexts/auth/entities/user';
 import { v4 as uuidv4 } from 'uuid';
+import { expectResultError, expectResultOk } from '@/shared/infra/testing/assertions';
 
 vi.mock('uuid', () => ({
     v4: vi.fn(),
@@ -17,7 +17,7 @@ describe('RegisterAttemptUseCase', () => {
     let userRepo: InMemoryUserRepo;
     let useCase: RegisterAttemptUseCase;
 
-    const testEmail = 'test@email.com';
+    const testEmail = 'testing@email.com';
     const testPassword = 'testPassword';
     const testHash = 'hashedPassword';
 
@@ -31,18 +31,17 @@ describe('RegisterAttemptUseCase', () => {
     it('should register a new user successfully', async () => {
         const result = await useCase.execute(testEmail, testPassword);
 
-        expectRegisterOk(result);
-        expect(result.user?.email).toBe(testEmail);
-        expect(result.user?.passwordHash).toBe(testHash);
-
-        await expectHasStoredUser(result.user, userRepo);
+        expectResultOk<User>(result);
+        expect(result.value.email).toBe(testEmail);
+        expect(result.value.passwordHash).toBe(testHash);
+        await expectHasStoredUser(result.value, userRepo);
     });
 
     for (const invalidEmail of invalidEmails) {
         it(`should fail with non-email email value: ${invalidEmail}`, async () => {
             const result = await useCase.execute('nonEmail', testPassword);
 
-            expectRegisterFailed(result);
+            expectResultError(result);
             expect(result.error).toBe('Invalid email address');
         });
     }
@@ -51,7 +50,7 @@ describe('RegisterAttemptUseCase', () => {
         it(`should fail with invalid password value: ${invalidPassword}`, async () => {
             const result = await useCase.execute(testEmail, '');
 
-            expectRegisterFailed(result);
+            expectResultError(result);
             expect(result.error).toBe('Password must be at least 8 characters');
         });
     }
@@ -62,7 +61,7 @@ describe('RegisterAttemptUseCase', () => {
 
         const result = await useCase.execute(testEmail, testPassword);
 
-        expectRegisterFailed(result);
+        expectResultError(result);
         expect(result.error).toBe('User with this email address already exists');
     });
 
@@ -82,18 +81,10 @@ describe('RegisterAttemptUseCase', () => {
         await userRepo.upsert({ id: 'abc', email: testEmail, passwordHash: '123' });
         const result = await useCase.execute(testEmail.toUpperCase(), testPassword);
 
-        expectRegisterFailed(result);
+        expectResultError<string>(result);
         expect(result.error).toBe('User with this email address already exists');
     });
 });
-
-function expectRegisterFailed(result: RegisterResult): asserts result is RegisterFailed {
-    expect(result.ok).toBe(false);
-}
-
-function expectRegisterOk(result: RegisterResult): asserts result is RegisterOk {
-    expect(result.ok).toBe(true);
-}
 
 async function expectHasStoredUser(user: User, repo: UserRepo) {
     const saved = await repo.getByEmail(user.email);

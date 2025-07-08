@@ -14,8 +14,8 @@ authRoutes.post('/login', async (req, res) => {
         throw new ValidationError(`Invalid login details: ${loginResult.error}`);
     }
     const authDescription = getAuthDescription();
-    await authDescription.setAccessToken(loginResult.accessToken, res);
-    await authDescription.setRefreshToken(loginResult.refreshToken, res);
+    await authDescription.setAccessToken(loginResult.value.accessToken, res);
+    await authDescription.setRefreshToken(loginResult.value.refreshToken, res);
     res.json({ message: 'Login successful' });
 });
 
@@ -31,8 +31,8 @@ authRoutes.get('/refresh', async (req, res) => {
     }
 
     const authDescription = getAuthDescription();
-    await authDescription.setAccessToken(refreshResult.accessToken, res);
-    await authDescription.setRefreshToken(refreshResult.refreshToken, res);
+    await authDescription.setAccessToken(refreshResult.value.accessToken, res);
+    await authDescription.setRefreshToken(refreshResult.value.refreshToken, res);
     res.json({ message: 'Tokens refreshed.' });
 });
 
@@ -55,7 +55,7 @@ authRoutes.get('/me', async (req, res) => {
     if (!meResult.ok) {
         throw new UnauthorizedError(`Error processing "me" request: ${meResult.error}`);
     }
-    res.json( { user: meResult.user });
+    res.json( { user: meResult.value });
 });
 
 function parseLoginData(req: Request): LoginRequest {

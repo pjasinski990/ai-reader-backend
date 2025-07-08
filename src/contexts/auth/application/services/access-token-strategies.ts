@@ -1,6 +1,6 @@
 import {
     CreateAccessTokenStrategy,
-    ExtractTokenStrategy,
+    ExtractTokenStrategy, JwtAuthenticatedData,
     SetTokenStrategy,
     VerifyAccessTokenStrategy
 } from '@/contexts/auth/entities/auth-strategy';
@@ -8,6 +8,7 @@ import { AccessTokenPayload, AccessTokenPayloadSchema } from '@/contexts/auth/en
 import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import { CookieOptions, Request, Response } from 'express';
 import { ValidationError } from '@/shared/entities/http-errors';
+import { nok, ok } from '@/shared/entities/result';
 
 // TODO once deployed
 process.env.JWT_SECRET = 'mock secret';
@@ -32,16 +33,14 @@ export const verifyJwtAccessToken: VerifyAccessTokenStrategy = async (token: str
     try {
         const data = jwt.verify(token, secret);
         const payload = validatePayload(data);
-        return { ok: true, authType: 'jwt', payload, expired: false };
+        return ok<JwtAuthenticatedData>({ authType: 'jwt', payload, expired: false });
     } catch (e) {
         if (e instanceof TokenExpiredError) {
             const payload = jwt.verify(token, secret, { ignoreExpiration: true }) as AccessTokenPayload;
-            return { ok: true, authType: 'jwt', payload, expired: true };
+            return ok<JwtAuthenticatedData>({ authType: 'jwt', payload, expired: true });
         }
-        return {
-            ok: false,
-            error: e instanceof Error ? e.message : 'Invalid or expired token',
-        };
+        const errorMsg = e instanceof Error ? e.message : 'Invalid or expired token';
+        return nok(errorMsg);
     }
 };
 
@@ -61,6 +60,7 @@ function validatePayload(data: unknown): AccessTokenPayload {
     return parseResult.data;
 }
 
+// TODO pull from config?
 const fifteenMinutesMs = 15 * 60 * 1000;
 function secureCookieOptions(): CookieOptions {
     return {

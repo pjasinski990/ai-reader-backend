@@ -1,6 +1,6 @@
 import { ParserManager } from '@/contexts/material/application/services/parser-manager';
 import { UserUpload } from '@/contexts/material/entities/user-upload';
-import { MockParser } from '@/contexts/material/infra/mocks/mock-parser';
+import { MockParser } from '@/contexts/material/infra/testing/mock-parser';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('parser manager service', () => {
