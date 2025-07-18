@@ -1,4 +1,4 @@
-import { Message } from '../../../../../shared/ports/out/llm-provider';
+import { Message } from '@/shared/ports/out/llm-provider';
 
 export type ValidateSchemaFn<T> = (value: unknown) => value is T; 
 

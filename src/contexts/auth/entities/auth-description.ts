@@ -1,4 +1,5 @@
 import {
+    ClearTokenStrategy,
     CreateAccessTokenStrategy,
     CreateRefreshTokenStrategy,
     ExtractTokenStrategy,
@@ -11,11 +12,13 @@ import {
 export interface AuthDescription {
     createAccessToken: CreateAccessTokenStrategy;
     setAccessToken: SetTokenStrategy,
+    clearAccessToken: ClearTokenStrategy,
     extractAccessToken: ExtractTokenStrategy,
     verifyAccessToken: VerifyAccessTokenStrategy,
 
     createRefreshToken: CreateRefreshTokenStrategy;
     extractRefreshToken: ExtractTokenStrategy,
+    clearRefreshToken: ClearTokenStrategy,
     setRefreshToken: SetTokenStrategy,
 
     hashPassword: HashPasswordStrategy,

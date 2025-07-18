@@ -19,6 +19,20 @@ authRoutes.post('/login', async (req, res) => {
     res.json({ message: 'Login successful' });
 });
 
+authRoutes.post('/logout', async (req, res) => {
+    const authDescription = getAuthDescription();
+    const at = await authDescription.extractAccessToken(req) ?? '';
+    const rt = await authDescription.extractRefreshToken(req) ?? '';
+    const result = await authController.onLogout(at, rt);
+    await authDescription.clearAccessToken(at, res);
+    await authDescription.clearRefreshToken(rt, res);
+
+    if (!result.ok) {
+        throw new ValidationError(result.error);
+    }
+    res.json({ message: result.value });
+});
+
 authRoutes.get('/refresh', async (req, res) => {
     const at = await getAuthDescription().extractAccessToken(req);
     const rt = await getAuthDescription().extractRefreshToken(req);

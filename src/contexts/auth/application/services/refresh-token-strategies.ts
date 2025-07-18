@@ -1,4 +1,5 @@
 import {
+    ClearTokenStrategy,
     CreateRefreshTokenStrategy,
     ExtractTokenStrategy,
     SetTokenStrategy
@@ -13,6 +14,10 @@ export const createRandomToken: CreateRefreshTokenStrategy = async (userId: stri
 
 export const setRefreshTokenToCookie: SetTokenStrategy = async (token: string, res: Response) => {
     res.cookie('refreshToken', token, secureCookieOptions());
+};
+
+export const clearRefreshTokenFromCookie: ClearTokenStrategy = async (token: string, res: Response) => {
+    res.clearCookie('refreshToken', secureCookieOptions());
 };
 
 export const extractRefreshTokenFromCookie: ExtractTokenStrategy = (req: Request) => {

@@ -1,4 +1,5 @@
 import {
+    ClearTokenStrategy,
     CreateAccessTokenStrategy,
     ExtractTokenStrategy, JwtAuthenticatedData,
     SetTokenStrategy,
@@ -21,6 +22,10 @@ export const createJwtAccessToken: CreateAccessTokenStrategy = async (ownerId: s
 
 export const setAccessTokenToCookie: SetTokenStrategy = async (token: string, res: Response) => {
     res.cookie('accessToken', token, secureCookieOptions());
+};
+
+export const clearAccessTokenFromCookie: ClearTokenStrategy = async (token: string, res: Response) => {
+    res.clearCookie('accessToken', secureCookieOptions());
 };
 
 export const extractAccessTokenFromCookie: ExtractTokenStrategy = (req: Request) => {

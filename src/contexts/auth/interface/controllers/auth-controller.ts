@@ -13,6 +13,9 @@ import { RefreshAttemptUseCase } from '@/contexts/auth/application/use-cases/ref
 import { GetLoggedInUser } from '@/contexts/auth/application/ports/in/get-logged-in-user';
 import { GetLoggedInUserUseCase } from '@/contexts/auth/application/use-cases/get-logged-in-user';
 import { WhoAmIResult } from '@/contexts/auth/entities/who-am-i-result';
+import { LogoutUser } from '@/contexts/auth/application/ports/in/logout-user';
+import { LogoutUserUseCase } from '@/contexts/auth/application/use-cases/logout-user';
+import { LogoutResult } from '@/contexts/auth/entities/logout-result';
 
 export class AuthController {
     constructor(
@@ -20,6 +23,7 @@ export class AuthController {
         private readonly refreshAttempt: RefreshAttempt,
         private readonly registerAttempt: RegisterAttempt,
         private readonly getLoggedInUser: GetLoggedInUser,
+        private readonly logUserOut: LogoutUser,
     ) { }
 
     onLoginAttempt(email: string, password: string): Promise<LoginResult> {
@@ -28,6 +32,10 @@ export class AuthController {
 
     onRefreshAttempt(accessToken: string, refreshToken: string): Promise<LoginResult> {
         return this.refreshAttempt.execute(accessToken, refreshToken);
+    }
+
+    async onLogout(accessToken: string, refreshToken: string): Promise<LogoutResult> {
+        return await this.logUserOut.execute(accessToken, refreshToken);
     }
 
     onRegisterAttempt(email: string, password: string): Promise<RegisterResult> {
@@ -49,4 +57,5 @@ export const authController = new AuthController(
     new RefreshAttemptUseCase(refreshTokenService, authDescription),
     new RegisterAttemptUseCase(userRepo, authDescription),
     new GetLoggedInUserUseCase(userRepo, authDescription),
+    new LogoutUserUseCase(refreshTokenService, authDescription),
 );
