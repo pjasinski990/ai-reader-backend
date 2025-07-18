@@ -18,6 +18,8 @@ export type CreateRefreshTokenStrategy = (ownerId: string) => Promise<string>;
 
 export type SetTokenStrategy = (token: string, res: Response) => Promise<void>;
 
+export type ClearTokenStrategy = (token: string, res: Response) => Promise<void>;
+
 export type ExtractTokenStrategy = (req: Request) => Promise<string | null>;
 
 export type HashPasswordStrategy = (password: string) => Promise<string>;
