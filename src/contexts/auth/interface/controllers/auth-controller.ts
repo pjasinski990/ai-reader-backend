@@ -16,6 +16,7 @@ import { WhoAmIResult } from '@/contexts/auth/entities/who-am-i-result';
 import { LogoutUser } from '@/contexts/auth/application/ports/in/logout-user';
 import { LogoutUserUseCase } from '@/contexts/auth/application/use-cases/logout-user';
 import { LogoutResult } from '@/contexts/auth/entities/logout-result';
+import { JsonUserRepo } from '@/contexts/auth/infra/json-user-repo';
 
 export class AuthController {
     constructor(
@@ -47,7 +48,7 @@ export class AuthController {
     }
 }
 
-const userRepo = new InMemoryUserRepo();
+const userRepo = new JsonUserRepo();
 const tokenRepo = new InMemoryRefreshTokenRepo();
 const authDescription = getAuthDescription();
 const refreshTokenService = new RefreshTokenService(tokenRepo, authDescription.createRefreshToken);
