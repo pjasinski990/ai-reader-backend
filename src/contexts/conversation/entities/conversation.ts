@@ -1,8 +1,9 @@
-import { Message } from '@/shared/ports/out/llm-provider';
+import { Message } from '@/shared/entities/message';
 
 export interface Conversation {
     id: string;
     title: string;
+    projectId: string;
     messages: Message[];
     mode: Mode;
 }

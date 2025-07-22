@@ -26,7 +26,7 @@ export class GetUserProjectsUseCase implements GetUserProjects {
     ): Promise<UiProject> {
         const materials = await this.materialRetriever.execute(project.materialIds);
         const quizzes = await  this.quizRetriever.execute(project.quizIds);
-        const conversations = await this.conversationRetriever.execute(project.conversationIds);
+        const conversations = await this.conversationRetriever.execute(project.id);
         return {
             id: project.id,
             title: project.title,

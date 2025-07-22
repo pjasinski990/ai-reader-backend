@@ -1,7 +1,7 @@
 import { Conversation } from '@/contexts/conversation/entities/conversation';
 
-export interface GetConversations {
+export interface GetProjectConversations {
     execute(
-        ids: string[]
+        projectId: string,
     ): Promise<Conversation[]>;
 }

@@ -4,6 +4,7 @@ import { AuthData, LoginResult } from '@/contexts/auth/entities/login-result';
 import { AuthDescription } from '@/contexts/auth/entities/auth-description';
 import { RefreshTokenService } from '@/contexts/auth/application/services/refresh-token-service';
 import { nok, ok } from '@/shared/entities/result';
+import { toPublicUserData } from '@/contexts/auth/entities/who-am-i-result';
 
 export class LoginAttemptUseCase implements LoginAttempt {
     constructor(
@@ -23,10 +24,11 @@ export class LoginAttemptUseCase implements LoginAttempt {
             return nok('Invalid password');
         }
 
+        const publicUserData = toPublicUserData(existingUser);
         const accessToken = await this.authDescription.createAccessToken(existingUser.id);
         const refreshToken = await this.refreshTokenService.issue(existingUser.id);
         return ok<AuthData>({
-            userId: existingUser.id,
+            user: publicUserData,
             accessToken,
             refreshToken
         });

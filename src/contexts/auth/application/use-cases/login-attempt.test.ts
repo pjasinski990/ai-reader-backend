@@ -37,13 +37,15 @@ describe('login attempt use case', () => {
 
     it('should pass with valid password', async () => {
         await userRepo.upsert(testUser);
+        const { passwordHash, ...publicUserData } =  testUser;
+        void passwordHash;
 
         const result = await useCase.execute(testUser.email, testUser.passwordHash);
 
         expectResultOk<AuthData>(result);
         expect(result.value.accessToken).toBe('dummy-access-token');
         expect(result.value.refreshToken).toBe('dummy-refresh-token');
-        expect(result.value.userId).toBe(testUser.id);
+        expect(result.value.user).to.deep.equal(publicUserData);
     });
 
     it('should fail when user does not exist', async () => {
