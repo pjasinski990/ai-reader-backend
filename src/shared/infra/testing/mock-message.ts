@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Random } from '@/shared/infra/testing/random';
-import { Message, Role } from '@/shared/ports/out/llm-provider';
+import { Message, Role } from '@/shared/entities/message';
 
 export class MockMessage {
     private id: string | null = null;

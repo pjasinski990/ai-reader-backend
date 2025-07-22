@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Summarizer } from '@/contexts/material/application/ports/out/summarizer';
-import { LLMProvider, Message, Role } from '@/shared/ports/out/llm-provider';
+import { LLMProvider } from '@/shared/ports/out/llm-provider';
+import { Message, Role } from '@/shared/entities/message';
 import { Summarizable, Summarized } from '@/contexts/material/entities/chunk';
 
 export class LLMSummarizer implements Summarizer {

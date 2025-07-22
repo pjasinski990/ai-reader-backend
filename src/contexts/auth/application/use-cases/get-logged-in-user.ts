@@ -2,8 +2,7 @@ import { GetLoggedInUser } from '@/contexts/auth/application/ports/in/get-logged
 import { AuthDescription } from '@/contexts/auth/entities/auth-description';
 import { UserRepo } from '@/contexts/auth/application/ports/out/user-repo';
 import { extractUserId } from '@/contexts/auth/application/services/access-token-utils';
-import { PublicUserData, WhoAmIResult } from '@/contexts/auth/entities/who-am-i-result';
-import { User } from '@/contexts/auth/entities/user';
+import { PublicUserData, toPublicUserData, WhoAmIResult } from '@/contexts/auth/entities/who-am-i-result';
 import { nok, ok } from '@/shared/entities/result';
 
 export class GetLoggedInUserUseCase implements GetLoggedInUser {
@@ -26,10 +25,4 @@ export class GetLoggedInUserUseCase implements GetLoggedInUser {
         const userData = toPublicUserData(user);
         return ok<PublicUserData>(userData);
     }
-}
-
-function toPublicUserData(user: User): PublicUserData {
-    const { passwordHash, ...publicFields } = user;
-    void passwordHash;
-    return publicFields;
 }

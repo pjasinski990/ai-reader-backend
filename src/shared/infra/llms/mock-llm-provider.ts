@@ -1,6 +1,7 @@
-import { LLMProvider, Message, Role } from '@/shared/ports/out/llm-provider';
+import { LLMProvider } from '@/shared/ports/out/llm-provider';
 import { MockMessage, RandomMessage } from '@/shared/infra/testing/mock-message';
 import { Random } from '@/shared/infra/testing/random';
+import { Message, Role } from '@/shared/entities/message';
 
 export class MockLLMProvider implements LLMProvider {
     async *streamQuery(conversation: Message[]): AsyncGenerator<string, void, unknown> {

@@ -1,4 +1,4 @@
-import { Message, Role } from '@/shared/ports/out/llm-provider';
+import { Message, Role } from '@/shared/entities/message';
 import { ReturnSchema, StructuredLLMProvider, ValidateSchemaFn } from '@/contexts/material/application/ports/out/structured-llm-provider';
 import { QuizProvider, QuizGenerationParams } from '../../application/ports/out/quiz-provider';
 import { QuizQuestion } from '../../entities/quiz-question';

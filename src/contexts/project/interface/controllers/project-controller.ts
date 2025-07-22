@@ -12,7 +12,7 @@ import { InMemoryQuizRepo } from '@/contexts/quiz/infra/in-memory-quiz-repo';
 import { GetMaterialsUseCase } from '@/contexts/material/application/use-cases/get-materials';
 import { JsonMaterialRepo } from '@/contexts/material/infra/testing/json-materials-repo';
 import { InAppConversationPreviewRetriever } from '@/contexts/project/infra/in-app-conversation-preview-retriever';
-import { GetConversationsUseCase } from '@/contexts/conversation/application/use-cases/get-conversations';
+import { GetProjectConversationsUseCase } from '@/contexts/conversation/application/use-cases/get-project-conversations';
 import { InMemoryConversationRepo } from '@/contexts/conversation/infra/in-memory-conversation-repo';
 
 export class ProjectController {
@@ -39,7 +39,7 @@ export class ProjectController {
 export const projectController = new ProjectController(
     new InMemoryProjectRepo(),
     new GetUserProjectsUseCase(
-        new InAppConversationPreviewRetriever(new GetConversationsUseCase(new InMemoryConversationRepo())),
+        new InAppConversationPreviewRetriever(new GetProjectConversationsUseCase(new InMemoryConversationRepo())),
         new InAppMaterialPreviewRetriever(new GetMaterialsUseCase(new JsonMaterialRepo())),
         new InAppQuizPreviewRetriever(new GetQuizzesUseCase(new InMemoryQuizRepo()))
     ),

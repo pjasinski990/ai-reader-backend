@@ -1,8 +1,9 @@
-import { LLMProvider, Message, Role } from '@/shared/ports/out/llm-provider';
+import { Message, Role } from '@/shared/entities/message';
 import { OpenAI } from 'openai';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions/completions';
 import { LLMHttpError } from '@/shared/entities/llm-http-error';
 import { LLMQueryError } from '@/shared/entities/llm-query-error';
+import { LLMProvider } from '@/shared/ports/out/llm-provider';
 
 export class OpenAIProvider implements LLMProvider {
     client: OpenAI;
