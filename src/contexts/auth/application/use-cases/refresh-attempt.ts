@@ -4,9 +4,12 @@ import { AuthDescription } from '@/contexts/auth/entities/auth-description';
 import { RefreshTokenService } from '@/contexts/auth/application/services/refresh-token-service';
 import { extractUserId } from '@/contexts/auth/application/services/access-token-utils';
 import { nok, ok } from '@/shared/entities/result';
+import { UserRepo } from '@/contexts/auth/application/ports/out/user-repo';
+import { toPublicUserData } from '@/contexts/auth/entities/who-am-i-result';
 
 export class RefreshAttemptUseCase implements RefreshAttempt {
     constructor(
+        private readonly userRepo: UserRepo,
         private readonly refreshTokenService: RefreshTokenService,
         private readonly authDescription: AuthDescription,
     ) { }
@@ -31,10 +34,16 @@ export class RefreshAttemptUseCase implements RefreshAttempt {
             return nok('Refresh token expired');
         }
 
+        const existingUser = await this.userRepo.getById(userId);
+        if (!existingUser) {
+            return nok('Invalid user');
+        }
+
+        const publicUserData = toPublicUserData(existingUser);
         const newAccessToken = await this.authDescription.createAccessToken(userId);
         const newRefreshToken = await this.refreshTokenService.issue(userId);
         return ok<AuthData>({
-            userId,
+            user: publicUserData,
             accessToken: newAccessToken,
             refreshToken: newRefreshToken,
         });

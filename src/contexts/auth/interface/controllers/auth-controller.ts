@@ -55,7 +55,7 @@ const refreshTokenService = new RefreshTokenService(tokenRepo, authDescription.c
 
 export const authController = new AuthController(
     new LoginAttemptUseCase(userRepo, refreshTokenService, authDescription),
-    new RefreshAttemptUseCase(refreshTokenService, authDescription),
+    new RefreshAttemptUseCase(userRepo, refreshTokenService, authDescription),
     new RegisterAttemptUseCase(userRepo, authDescription),
     new GetLoggedInUserUseCase(userRepo, authDescription),
     new LogoutUserUseCase(refreshTokenService, authDescription),

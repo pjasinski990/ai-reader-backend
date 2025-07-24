@@ -12,9 +12,12 @@ import {
     returnsExpiredAccessTokenWith,
     returnsInvalidAccessTokenWith
 } from '@/contexts/auth/infra/testing/mock-token-verify';
+import { UserRepo } from '@/contexts/auth/application/ports/out/user-repo';
+import { InMemoryUserRepo } from '@/contexts/auth/infra/in-memory-user-repo';
 
 describe('RefreshAttemptUseCase', () => {
     let refreshTokenRepo: RefreshTokenRepo;
+    let userRepo: UserRepo;
     let refreshTokenService: RefreshTokenService;
     let authDescription: AuthDescription;
     let useCase: RefreshAttemptUseCase;
@@ -25,9 +28,10 @@ describe('RefreshAttemptUseCase', () => {
 
     beforeEach(() => {
         refreshTokenRepo = new InMemoryRefreshTokenRepo();
+        userRepo = new InMemoryUserRepo();
         authDescription = { ...getAuthDescription() };
         refreshTokenService = new RefreshTokenService(refreshTokenRepo, authDescription.createRefreshToken);
-        useCase = new RefreshAttemptUseCase(refreshTokenService, authDescription);
+        useCase = new RefreshAttemptUseCase(userRepo, refreshTokenService, authDescription);
     });
 
     it('returns error if access token is malformed', async () => {
@@ -72,8 +76,18 @@ describe('RefreshAttemptUseCase', () => {
         expect(result).toEqual({ ok: false, error: 'Refresh token expired' });
     });
 
+    it('returns error if user does not exist', async () => {
+        authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
+        const refreshToken = await refreshTokenService.issue(userId);
+
+        const result = await useCase.execute(unusedAccessToken, refreshToken);
+
+        expect(result).toEqual({ ok: false, error: 'Invalid user' });
+    });
+
     it('returns new valid tokens on valid request', async () => {
         authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
+        await userRepo.upsert({ id: userId, passwordHash: 'unnecessary', email: 'doesnt@matter' });
         const refreshToken = await refreshTokenService.issue(userId);
 
         const result = await useCase.execute(unusedAccessToken, refreshToken);
