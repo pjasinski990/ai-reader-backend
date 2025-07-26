@@ -1,17 +1,18 @@
 import { Message, Role } from '@/shared/entities/message';
-import { ReturnSchema, StructuredLLMProvider, ValidateSchemaFn } from '@/contexts/material/application/ports/out/structured-llm-provider';
-import { QuizProvider, QuizGenerationParams } from '../../application/ports/out/quiz-provider';
-import { QuizQuestion } from '../../entities/quiz-question';
+import { StructuredLLMProvider, ValidateSchemaFn } from '@/contexts/material/application/ports/out/structured-llm-provider';
+import { QuizProvider, QuizGenerationParams, jsonSchemaForQuestions, QuestionTypeMap } from '../../application/ports/out/quiz-provider';
+import { QuestionType } from '../../entities';
 
 export class OpenAIQuizProvider implements QuizProvider {
     constructor(private readonly structuredLLMProvider: StructuredLLMProvider) {}
 
-    async generateQuestions<T extends QuizQuestion>(
+    async generateQuestionsFromContent<T extends QuestionType>(
         resource: string, 
-        questionSchema: ReturnSchema<T>, 
-        params: QuizGenerationParams
-    ): Promise<T[]> {
-        const result = await this.structuredLLMProvider.structuredQuery<T[]>(
+        params: QuizGenerationParams & { questionType: T }
+    ): Promise<QuestionTypeMap[T][]> {
+        const questionSchema = jsonSchemaForQuestions[params.questionType];
+
+        const result = await this.structuredLLMProvider.structuredQuery<QuestionTypeMap[T][]>(
             [this.systemNote(params), this.userPrompt(resource, params)],
             {
                 schemaDefinition: this.wrapSchemaInArray(questionSchema.schemaDefinition, params.numberOfQuestions),
