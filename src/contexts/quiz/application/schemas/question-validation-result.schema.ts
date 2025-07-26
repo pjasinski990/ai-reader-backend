@@ -28,4 +28,4 @@ const validateQVR: ValidateFunction<QuestionValidationResult> = ajv.compile(ques
 
 export const validateQVRSchema: ValidateSchemaFn<QuestionValidationResult> = (value: unknown): value is QuestionValidationResult => {
     return validateQVR(value);
-}; 
+};

@@ -1,76 +1,68 @@
-import { Quiz } from '../../entities/quiz';
-import { CreateQuizFromMaterial, QuizCreationParams } from '../ports/in/create-quiz-from-material';
-import { QuizProvider, QuizGenerationParams } from '../ports/out/quiz-provider';
+import { CreateQuizFromMaterial, QuizCreationParams, QuizDifficulty } from '../ports/in/create-quiz-from-material';
+import { QuizProvider } from '../ports/out/quiz-provider';
 import { v4 as uuidv4 } from 'uuid';
-import { MaterialRepo } from '@/contexts/material/application/ports/out/material-repo';
-import { ContentExtractionStrategy } from '../ports/out/content-extraction-strategy';
-import { multipleChoiceQuestionSchemaJson, validateMCQSchema } from '../schemas/multiple-choice-question.schema';
-import { openEndedQuestionSchemaJson, validateOEQSchema } from '../schemas/open-ended-question.schema';
-import { QuizQuestion } from '../../entities/quiz-question';
+import { QuizRepo } from '../ports/out/quiz-repo';
+import { ContentExtractionStrategy } from '@/shared/ports/out/content-extraction-strategy';
+import { GeneratedQuizQuestion, QuestionType, QuizDescription, toQuizQuestion } from '../../entities';
+import { QuestionsRepo } from '../ports/out/questions-repo';
 
 export class CreateQuizFromMaterialUseCase implements CreateQuizFromMaterial {
+    constructor(
+        private readonly quizProvider: QuizProvider,
+        private readonly contentExtractionStrategy: ContentExtractionStrategy,
+        private readonly quizRepo: QuizRepo,
+        private readonly questionsRepo: QuestionsRepo
+    ) {}
+    
     async execute(
-        projectTitle: string,
-        materialIds: string[],
-        quizProvider: QuizProvider, 
-        materialRepo: MaterialRepo,
-        contentExtractionStrategy: ContentExtractionStrategy,
         params: QuizCreationParams
-    ): Promise<Quiz> {
-        const extractionContext = {
-            projectTitle,
-            materialIds,
-            options: {
-                difficulty: params.difficulty,
-                numberOfQuestions: params.numberOfQuestions,
-                extractionPrompt: params.extractionPrompt,
-                topicFocus: params.topicFocus,
-                ...params.additionalContext
-            }
+    ): Promise<QuizDescription> {
+        const newQuiz: QuizDescription = {
+            id: uuidv4(),
+            projId: params.projId,
+            userId: params.userId,
+            name: `${this.formatDifficultyLevel(params.difficulty)} Quiz ${new Date().toLocaleDateString()}`,
+            completed: 'NEW'
         };
+
+        const content = await this.contentExtractionStrategy.extractContent({projId: params.projId});
+        const generatedQuestions = await this.generateQuestionsFromContent(content, params);
+        const quizQuestions = generatedQuestions.map(q => toQuizQuestion(q, newQuiz.id));
         
-        const content = await contentExtractionStrategy.extractContent(extractionContext, materialRepo);
-        const questions: QuizQuestion[] = [];
+        await this.quizRepo.upsert(newQuiz);
+        quizQuestions.forEach(async (q) => await this.questionsRepo.upsertQuestion(q));
+        return newQuiz;
+    }
+
+    private async generateQuestionsFromContent(content: string, params: QuizCreationParams) {
+        const questions: GeneratedQuizQuestion[] = [];
 
         const { multipleChoiceCount, openEndedCount } = this.calculateQuestionDistribution(params);
 
-        const generationParams: QuizGenerationParams = {
-            difficulty: params.difficulty,
-            numberOfQuestions: params.numberOfQuestions
-        };
-
         if (params.includeMultipleChoice && multipleChoiceCount > 0) {
-            const multipleChoiceQuestions = await quizProvider.generateQuestions(
-                content,
-                {
-                    schemaDefinition: multipleChoiceQuestionSchemaJson,
-                    validateSchema: validateMCQSchema
-                },
-                { ...generationParams, numberOfQuestions: multipleChoiceCount }
-            );
-            questions.push(...multipleChoiceQuestions);
+            const mcsQuestions = await this.generateQuestionsForGivenType(content, params.difficulty, multipleChoiceCount, 'multiple_choice');
+            questions.push(...mcsQuestions);
         }
 
         if (params.includeOpenEnded && openEndedCount > 0) {
-            const openEndedQuestions = await quizProvider.generateQuestions(
-                content,
-                {
-                    schemaDefinition: openEndedQuestionSchemaJson,
-                    validateSchema: validateOEQSchema
-                },
-                { ...generationParams, numberOfQuestions: openEndedCount }
-            );
-            questions.push(...openEndedQuestions);
+            const oeQuestions = await this.generateQuestionsForGivenType(content, params.difficulty, multipleChoiceCount, 'open_ended');
+            questions.push(...oeQuestions);
         }
 
         const shuffledQuestions = this.shuffleQuestions(questions);
+        return shuffledQuestions;
+    }
 
-        return {
-            id: uuidv4(),
-            name: `${this.formatDifficultyLevel(params.difficulty)} Quiz for ${projectTitle}`,
-            questions: shuffledQuestions,
-            completed: false
-        };
+    private async generateQuestionsForGivenType(content: string, difficulty: QuizDifficulty, numberOfQuestions: number, questionType: QuestionType) {
+        const questions = await this.quizProvider.generateQuestionsFromContent(
+            content,
+            { 
+                difficulty,
+                numberOfQuestions,
+                questionType
+            }
+        );
+        return questions;
     }
 
     private calculateQuestionDistribution(params: QuizCreationParams): { multipleChoiceCount: number; openEndedCount: number } {
@@ -93,7 +85,7 @@ export class CreateQuizFromMaterialUseCase implements CreateQuizFromMaterial {
         return { multipleChoiceCount: numberOfQuestions, openEndedCount: 0 };
     }
 
-    private shuffleQuestions(questions: QuizQuestion[]): QuizQuestion[] {
+    private shuffleQuestions(questions: GeneratedQuizQuestion[]): GeneratedQuizQuestion[] {
         const shuffled = [...questions];
         
         for (let i = shuffled.length - 1; i > 0; i--) {
@@ -104,9 +96,7 @@ export class CreateQuizFromMaterialUseCase implements CreateQuizFromMaterial {
         return shuffled;
     }
 
-    private formatDifficultyLevel(difficulty: string): string {
+    private formatDifficultyLevel(difficulty: QuizDifficulty): string {
         return difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
     }
-
-
-} 
+}

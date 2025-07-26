@@ -1,27 +1,31 @@
-import { Quiz } from '../../../entities/quiz';
-import { QuizProvider } from '../out/quiz-provider';
-import { MaterialRepo } from '@/contexts/material/application/ports/out/material-repo';
-import { ContentExtractionStrategy } from '../out/content-extraction-strategy';
+import { QuizDescription } from '@/contexts/quiz/entities';
+import { z } from 'zod';
 
 export interface CreateQuizFromMaterial {
     execute(
-        projectTitle: string,
-        materialIds: string[],
-        quizProvider: QuizProvider,
-        materialRepo: MaterialRepo,
-        contentExtractionStrategy: ContentExtractionStrategy,
         params: QuizCreationParams
-    ): Promise<Quiz>;
+    ): Promise<QuizDescription>;
 }
 
-export type DifficultyLevel = 'beginner' | 'intermediate' | 'expert';
+export const DifficultyLevels = ['beginner', 'intermediate', 'expert'] as const;
 
-export interface QuizCreationParams {
-    numberOfQuestions: number;
-    difficulty: DifficultyLevel;
-    includeMultipleChoice: boolean;
-    includeOpenEnded: boolean;
-    extractionPrompt?: string;
-    topicFocus?: string[];
-    additionalContext?: Record<string, unknown>;
-} 
+export const QuizCreationParamsSchema = z.object({
+    projId: z.string(),
+    userId: z.string(),
+    name: z.string().min(1, 'Name cannot be empty'),
+    numberOfQuestions: z.number().int().positive('Number of questions must be a positive integer'),
+    difficulty: z.enum(DifficultyLevels),
+    includeMultipleChoice: z.boolean(),
+    includeOpenEnded: z.boolean(),
+    extractionPrompt: z.string().optional(),
+    additionalContext: z.record(z.unknown()).optional(),
+}).refine(
+    (data) => data.includeMultipleChoice || data.includeOpenEnded,
+    {
+        message: 'At least one question type (multiple choice or open-ended) must be included',
+        path: ['includeMultipleChoice'],
+    }
+);
+
+export type QuizCreationParams = z.infer<typeof QuizCreationParamsSchema>;
+export type QuizDifficulty = (typeof DifficultyLevels)[number];

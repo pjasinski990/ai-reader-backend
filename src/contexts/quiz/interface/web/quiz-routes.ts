@@ -4,14 +4,16 @@ import { asyncWrapper } from '@/shared/utils/async-wrapper';
 
 export const quizRoutes = Router();
 
-quizRoutes.get('/:id', asyncWrapper(async (req, res) => {
-    const ids = [req.params.id];
-    const quizzes = await quizController.handleGetQuizzes(ids);
+quizRoutes.get('/:projId', asyncWrapper(async (req, res) => {
+    // Any clean way of validating that user has access to the requested project?
+    // const authenticatedUser = req.authToken!;
+    const projId = req.params.projId;
+    const quizzes = await quizController.handleGetQuizzesFromProject(projId);
     res.json(quizzes);
 }));
 
-quizRoutes.post('/create', asyncWrapper(async (req, res) => {
-    const { projectTitle, materialIds, params } = req.body;
-    const quiz = await quizController.handleCreateQuizFromMaterial(projectTitle, materialIds, params);
-    res.json(quiz);
-}));
+// quizRoutes.post('/create', asyncWrapper(async (req, res) => {
+//     const { projectTitle, materialIds, params } = req.body;
+//     const quiz = await quizController.handleCreateQuizFromMaterial(projectTitle, materialIds, params);
+//     res.json(quiz);
+// }));
