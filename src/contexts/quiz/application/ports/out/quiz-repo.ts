@@ -1,4 +1,4 @@
-import { QuizDescription } from '@/contexts/quiz/entities/quiz-description';
+import { QuizDescription } from '@/contexts/quiz/entities';
 
 export interface QuizRepo {
     upsert(quiz: QuizDescription): Promise<QuizDescription>;

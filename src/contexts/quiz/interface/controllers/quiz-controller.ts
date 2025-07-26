@@ -1,20 +1,19 @@
-import { QuizDescription } from '@/contexts/quiz/entities/quiz-description';
 import { CreateQuizFromMaterial, QuizCreationParams } from '@/contexts/quiz/application/ports/in/create-quiz-from-material';
-import { CreateQuizFromMaterialUseCase } from '../../application/use-cases/create-quiz-from-material';
-import { JsonMaterialRepo } from '@/contexts/material/infra/testing/json-materials-repo';
-import { OpenAIQuizProvider } from '../../infra/llms/openai-quiz-provider';
+import { CreateQuizFromMaterialUseCase } from '@/contexts/quiz/application/use-cases/create-quiz-from-material';
+import { OpenAIQuizProvider } from '@/contexts/quiz/infra/llms/openai-quiz-provider';
 import { OpenAIStructuredProvider } from '@/shared/infra/llms/open-ai-structured-provider';
-import { GetQuizzesFromProject } from '../../application/ports/in/get-quizzes-from-project';
-import { JsonQuizRepo } from '../../infra/json-quiz-repo';
-import { JsonQuestionsRepo } from '../../infra/json-questions-repo';
+import { GetQuizzesFromProject } from '@/contexts/quiz/application/ports/in/get-quizzes-from-project';
+import { JsonQuizRepo } from '@/contexts/quiz/infra/json-quiz-repo';
+import { JsonQuestionsRepo } from '@/contexts/quiz/infra/json-questions-repo';
 import { BasicContentExtractionStrategy } from '@/shared/infra/content-extraction/basic-content-extraction-strategy';
-import { QuestionServices, QuestionValidationResult } from '../../application/services/quiz-question.service';
-import { CheckUserAnswerUseCase } from '../../application/use-cases/check-user-answer';
-import { CheckUserAnswer } from '../../application/ports/in/check-user-answer';
-import { GetQuizQuestions } from '../../application/ports/in/get-quiz-questions';
-import { Answer, QuizQuestion } from '../../entities';
-import { GetQuizzesFromProjectUseCase } from '../../application/use-cases/get-quizzes-from-project';
-import { GetQuizQuestionsUseCase } from '../../application/use-cases/get-quiz-questions';
+import { QuestionServices, QuestionValidationResult } from '@/contexts/quiz/application/services/quiz-question.service';
+import { CheckUserAnswerUseCase } from '@/contexts/quiz/application/use-cases/check-user-answer';
+import { CheckUserAnswer } from '@/contexts/quiz/application/ports/in/check-user-answer';
+import { GetQuizQuestions } from '@/contexts/quiz/application/ports/in/get-quiz-questions';
+import { Answer, QuizQuestion, QuizDescription } from '@/contexts/quiz/entities';
+import { GetQuizzesFromProjectUseCase } from '@/contexts/quiz/application/use-cases/get-quizzes-from-project';
+import { GetQuizQuestionsUseCase } from '@/contexts/quiz/application/use-cases/get-quiz-questions';
+import { JsonMaterialRepo } from '@/contexts/material/infra/testing/json-materials-repo';
 
 export class QuizController {
     constructor(
