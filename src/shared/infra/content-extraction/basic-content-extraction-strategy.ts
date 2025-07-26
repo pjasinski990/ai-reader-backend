@@ -7,7 +7,7 @@ export class BasicContentExtractionStrategy implements ContentExtractionStrategy
     ) {}
 
     async extractContent(
-        context: ContentExtractionContext,
+        _context: ContentExtractionContext,
     ): Promise<string> {
         // TODO select only relevant for project
         const materials = await this.materialRepo.getAll();

@@ -1,4 +1,4 @@
-import { QuizQuestion } from '@/contexts/quiz/entities/quiz-question';
+import { QuizQuestion } from '@/contexts/quiz/entities';
 
 export interface GetQuizQuestions {
     execute(quizId: string): Promise<QuizQuestion[]>;

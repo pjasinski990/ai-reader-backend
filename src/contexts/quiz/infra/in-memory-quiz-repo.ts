@@ -1,5 +1,5 @@
 import { QuizRepo } from '@/contexts/quiz/application/ports/out/quiz-repo';
-import { QuizDescription } from '@/contexts/quiz/entities/quiz-description';
+import { QuizDescription } from '@/contexts/quiz/entities';
 
 export class InMemoryQuizRepo implements QuizRepo {
     private quizzes: QuizDescription[] = [];

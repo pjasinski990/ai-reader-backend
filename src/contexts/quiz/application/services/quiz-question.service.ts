@@ -12,7 +12,7 @@ export class QuestionServices {
         private readonly contentExtractionStrategy: ContentExtractionStrategy
     ) {}
 
-    async validate(question: QuizQuestion, userAnswer: Answer): Promise<QuestionValidationResult> {
+    async validate(_question: QuizQuestion, _userAnswer: Answer): Promise<QuestionValidationResult> {
         return ok(undefined);
     }
 }
