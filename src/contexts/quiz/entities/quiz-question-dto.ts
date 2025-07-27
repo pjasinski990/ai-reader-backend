@@ -1,4 +1,4 @@
-import { MultipleChoiceQuizQuestion, OpenEndedQuizQuestion, QuizQuestion } from "./quiz-question";
+import { MultipleChoiceQuizQuestion, OpenEndedQuizQuestion, QuizQuestion } from './quiz-question';
 
 export type OpenEndedQuizQuestionDTO = OpenEndedQuizQuestion;
 export type MulitpleChoiceQuizQuestionDTO = Omit<MultipleChoiceQuizQuestion, 'correctChoiceId'>;
@@ -11,7 +11,7 @@ export function toQuizQuestionDTO(q: QuizQuestion): QuizQuestionDTO {
             const { correctChoiceId, ...rest } = q;
             return rest;
         }
-        case "open_ended":
+        case 'open_ended':
             return { ...q };
     }
 }
