@@ -4,7 +4,6 @@ import { LLMProvider } from '@/shared/ports/out/llm-provider';
 import { ConversationRepo } from '@/contexts/conversation/application/ports/out/conversation-repo';
 import { ConversationMessage, Message, Role } from '@/shared/entities/message';
 import { Conversation, Mode } from '@/contexts/conversation/entities/conversation';
-import { conversationController } from '@/contexts/conversation/interface/controllers/conversation-controller';
 
 export class StartConversationUseCase implements StartConversation {
     constructor(

@@ -1,6 +1,5 @@
 import { LoginResult } from '@/contexts/auth/entities/login-result';
 import { RegisterResult } from '@/contexts/auth/entities/register-result';
-import { InMemoryUserRepo } from '@/contexts/auth/infra/in-memory-user-repo';
 import { InMemoryRefreshTokenRepo } from '@/contexts/auth/infra/in-memory-refresh-token-repo';
 import { LoginAttempt } from '@/contexts/auth/application/ports/in/login-attempt';
 import { RegisterAttempt } from '@/contexts/auth/application/ports/in/register-attempt';
