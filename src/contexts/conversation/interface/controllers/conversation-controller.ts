@@ -51,7 +51,7 @@ const conversationRepo = new InMemoryConversationRepo();
 
 export const conversationController = new ConversationController(
     new GetProjectConversationsUseCase(conversationRepo),
-    new StartConversationUseCase(llmProvider, conversationRepo),
+    new StartConversationUseCase(conversationRepo),
     new AddMessageToConversationUseCase(conversationRepo),
     new StreamAssistantResponseUseCase(conversationRepo, llmProvider),
 );
