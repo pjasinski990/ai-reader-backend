@@ -10,10 +10,13 @@ import { BuildAuthMiddlewareUseCase } from '@/contexts/auth/application/use-case
 import cors from 'cors';
 import { extractAccessTokenFromCookie, verifyJwtAccessToken } from '@/contexts/auth/application/services/access-token-strategies';
 import cookieParser from 'cookie-parser';
+import { logger } from '@/shared/interface/controllers/logging-controller';
+import { accessLogger } from '@/middleware/access-logs';
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+app.use(accessLogger);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
@@ -34,5 +37,5 @@ app.use('/api/project', projectRoutes);
 app.use(expressErrorHandler);
 
 app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+    logger.info(`Server is running at http://localhost:${port}`);
 });

@@ -1,11 +1,9 @@
 import { Conversation } from '@/contexts/conversation/entities/conversation';
-import { Role } from '@/shared/entities/message';
+import { Message } from '@/shared/entities/message';
+import { Result } from '@/shared/entities/result';
 
 export interface AddMessageToConversation {
     execute(
-        conversation: Conversation,
-        message: string,
-        role: Role,
-        id?: string,
-    ): Promise<Conversation>;
+        newMessage: Message,
+    ): Promise<Result<Conversation, string>>;
 }

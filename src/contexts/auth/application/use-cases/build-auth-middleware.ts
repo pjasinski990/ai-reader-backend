@@ -2,11 +2,11 @@ import { ExtractTokenStrategy, VerifyAccessTokenStrategy } from '@/contexts/auth
 import { NextFunction, Request, Response } from 'express';
 import { InternalServerError, UnauthorizedError } from '@/shared/entities/http-errors';
 import { BuildAuthMiddleware } from '@/contexts/auth/application/ports/in/build-auth-middleware';
-import { AuthMiddleware } from '@/contexts/auth/entities/auth-middleware';
+import { Middleware } from '@/contexts/auth/entities/middleware';
 import { isJwtAuthenticatedData } from '@/contexts/auth/application/services/access-token-utils';
 
 export class BuildAuthMiddlewareUseCase implements BuildAuthMiddleware {
-    execute(getToken: ExtractTokenStrategy, verifyToken: VerifyAccessTokenStrategy): AuthMiddleware {
+    execute(getToken: ExtractTokenStrategy, verifyToken: VerifyAccessTokenStrategy): Middleware {
         return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
             void res;
 

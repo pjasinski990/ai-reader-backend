@@ -33,11 +33,14 @@ export class MockConversation {
     }
 
     build(): Conversation {
+        const id = this.id ?? RandomConversation.id();
+        const messages = this.messages ?? RandomConversation.messages();
+        const cMessages = messages.map(m => { return { ...m, conversationId: id }; });
         return {
-            id: this.id ?? RandomConversation.id(),
+            id,
             projectId: this.projectId ?? RandomConversation.id(),
             title: this.title ?? RandomConversation.title(),
-            messages: this.messages ?? RandomConversation.messages(),
+            messages: cMessages,
             mode: this.mode ?? RandomConversation.mode(),
         };
     }

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '@/shared/entities/http-errors';
+import { logger } from '@/shared/interface/controllers/logging-controller';
 
 export const expressErrorHandler = ((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     void req;
@@ -13,7 +14,7 @@ export const expressErrorHandler = ((err: unknown, req: Request, res: Response, 
         return;
     }
 
-    console.error(err);
+    logger.error('', err);
     res.status(500).json({
         error: err instanceof Error ? err.message : 'Internal server error',
     });

@@ -7,6 +7,14 @@ export class HttpError extends Error {
     }
 }
 
+export class ValidationError extends HttpError {
+    details: unknown;
+    constructor(message: string, details?: unknown) {
+        super(400, message);
+        this.details = details;
+    }
+}
+
 export class UnauthorizedError extends HttpError {
     constructor(message = 'Unauthorized') {
         super(401, message);
@@ -29,13 +37,5 @@ export class MissingResourceError extends HttpError {
 export class InternalServerError extends HttpError {
     constructor(message = 'Internal Server Error') {
         super(500, message);
-    }
-}
-
-export class ValidationError extends HttpError {
-    details: unknown;
-    constructor(message: string, details?: unknown) {
-        super(400, message);
-        this.details = details;
     }
 }

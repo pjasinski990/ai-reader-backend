@@ -2,8 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { StartConversation } from '@/contexts/conversation/application/ports/in/start-conversation';
 import { LLMProvider } from '@/shared/ports/out/llm-provider';
 import { ConversationRepo } from '@/contexts/conversation/application/ports/out/conversation-repo';
-import { Message, Role } from '@/shared/entities/message';
+import { ConversationMessage, Message, Role } from '@/shared/entities/message';
 import { Conversation, Mode } from '@/contexts/conversation/entities/conversation';
+import { conversationController } from '@/contexts/conversation/interface/controllers/conversation-controller';
 
 export class StartConversationUseCase implements StartConversation {
     constructor(
@@ -18,8 +19,9 @@ export class StartConversationUseCase implements StartConversation {
     ) {
         const newConversation = generateConversation(projectId, mode, initialUserPrompt);
         const llmResponse = await this.llmProvider.query(newConversation.messages);
-        const newMessage: Message = {
+        const newMessage: ConversationMessage = {
             id: uuidv4(),
+            conversationId: newConversation.id,
             previousId: newConversation.messages.at(-1)!.id,
             role: Role.ASSISTANT,
             content: llmResponse,
@@ -39,12 +41,16 @@ function generateConversation(
     const systemMessage = generateSystemMessage();
     const initialUserMessage = generateUserMessage(systemMessage.id, initialUserPrompt);
     const title = generateConversationTitle();
+    const id = uuidv4();
     return {
-        id: uuidv4(),
+        id,
         projectId,
         title,
         mode,
-        messages: [systemMessage, initialUserMessage],
+        messages: [
+            toConversationMessage(systemMessage, id),
+            toConversationMessage(initialUserMessage, id)
+        ],
     };
 }
 
@@ -73,4 +79,11 @@ function getSystemPrompt() {
 
 function generateConversationTitle() {
     return 'New conversation';
+}
+
+function toConversationMessage(message: Message, conversationId: string): ConversationMessage {
+    return {
+        ...message,
+        conversationId,
+    };
 }
