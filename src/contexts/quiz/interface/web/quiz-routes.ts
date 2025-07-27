@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { quizController } from '../controllers/quiz-controller';
 import { asyncWrapper } from '@/shared/utils/async-wrapper';
+import { QuizCreationParamsSchema } from '../../application/ports/in/create-quiz-from-material';
 
 export const quizRoutes = Router();
 
@@ -12,8 +13,26 @@ quizRoutes.get('/:projId', asyncWrapper(async (req, res) => {
     res.json(quizzes);
 }));
 
-// quizRoutes.post('/create', asyncWrapper(async (req, res) => {
-//     const { projectTitle, materialIds, params } = req.body;
-//     const quiz = await quizController.handleCreateQuizFromMaterial(projectTitle, materialIds, params);
-//     res.json(quiz);
-// }));
+quizRoutes.get('/:quizId/questions', asyncWrapper(async (req, res) => {
+    const quizId = req.params.quizId;
+    const questions = await quizController.handleGettingQuizQuestions(quizId);
+    res.json({ questions });
+}));
+
+quizRoutes.post('/', asyncWrapper(async (req, res) => {
+    const validationResult = QuizCreationParamsSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+        return res.status(400).json({ errors: validationResult.error.errors });
+    }
+    const quizCreationParams = validationResult.data;
+    const createdQuiz = await quizController.handleQuizCreation(quizCreationParams);
+    res.status(201).send({ quiz: createdQuiz });
+}));
+
+quizRoutes.post('/questions/:questionId/validate-answer', asyncWrapper(async (req, res) => {
+    const { questionId } = req.params;
+    const answer = req.body;
+    const result = await quizController.handleAnswerValidation(questionId, answer);
+    res.json(result);
+}));

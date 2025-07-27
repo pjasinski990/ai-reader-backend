@@ -10,10 +10,11 @@ import { QuestionServices, QuestionValidationResult } from '@/contexts/quiz/appl
 import { CheckUserAnswerUseCase } from '@/contexts/quiz/application/use-cases/check-user-answer';
 import { CheckUserAnswer } from '@/contexts/quiz/application/ports/in/check-user-answer';
 import { GetQuizQuestions } from '@/contexts/quiz/application/ports/in/get-quiz-questions';
-import { Answer, QuizQuestion, QuizDescription } from '@/contexts/quiz/entities';
+import { Answer, QuizDescription } from '@/contexts/quiz/entities';
 import { GetQuizzesFromProjectUseCase } from '@/contexts/quiz/application/use-cases/get-quizzes-from-project';
 import { GetQuizQuestionsUseCase } from '@/contexts/quiz/application/use-cases/get-quiz-questions';
 import { JsonMaterialRepo } from '@/contexts/material/infra/testing/json-materials-repo';
+import { QuizQuestionDTO } from '../../entities/quiz-question-dto';
 
 export class QuizController {
     constructor(
@@ -35,7 +36,7 @@ export class QuizController {
         return await this.checkUserAnswer.execute(questionId, answer);
     }
 
-    async handleGettingQuizQuestions(quizId: string): Promise<QuizQuestion[]> {
+    async handleGettingQuizQuestions(quizId: string): Promise<QuizQuestionDTO[]> {
         return await this.getQuizQuestions.execute(quizId);
     }
 }

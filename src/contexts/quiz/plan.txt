@@ -1,9 +1,0 @@
-I want to improve the quiz functionality.
-
-It should contain:
-- user progress
-- user should be able to have partially filled quiz
-- option to answer the question and get it validated
-- option to create the quiz from some context
-- option to retrieve quiz
-- option to delete quiz

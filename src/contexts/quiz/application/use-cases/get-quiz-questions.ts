@@ -1,4 +1,4 @@
-import { QuizQuestion } from '../../entities';
+import { QuizQuestionDTO, toQuizQuestionDTO } from '../../entities';
 import { GetQuizQuestions } from '../ports/in/get-quiz-questions';
 import { QuestionsRepo } from '../ports/out/questions-repo';
 
@@ -7,8 +7,8 @@ export class GetQuizQuestionsUseCase implements GetQuizQuestions {
         private readonly questionsRepo: QuestionsRepo
     ) {}
 
-    // TODO map to some other type that will be used on the UI
-    async execute(quizId: string): Promise<QuizQuestion[]> {
-        return await this.questionsRepo.getAllQuestionsFromQuiz(quizId);
+    async execute(quizId: string): Promise<QuizQuestionDTO[]> {
+        const quizQuestions = await this.questionsRepo.getAllQuestionsFromQuiz(quizId);
+        return quizQuestions.map(toQuizQuestionDTO);
     }
 }

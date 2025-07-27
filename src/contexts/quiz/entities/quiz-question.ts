@@ -1,4 +1,4 @@
-import { GeneratedQuizQuestion } from './generated-question';
+import { GeneratedMultipleChoiceQuestion, GeneratedOpenEndedQuestion, GeneratedQuizQuestion } from './generated-question';
 import { UserAnswer } from './user-answer';
 
 export interface QuizQuestionContext {
@@ -6,7 +6,10 @@ export interface QuizQuestionContext {
     userAnswer: UserAnswer
 }
 
-export type QuizQuestion = GeneratedQuizQuestion & QuizQuestionContext;
+export interface OpenEndedQuizQuestion extends GeneratedOpenEndedQuestion, QuizQuestionContext {};
+export interface MultipleChoiceQuizQuestion extends GeneratedMultipleChoiceQuestion, QuizQuestionContext {};
+
+export type QuizQuestion = OpenEndedQuizQuestion | MultipleChoiceQuizQuestion;
 
 export function toQuizQuestion(q: GeneratedQuizQuestion, quizId: string): QuizQuestion {
     return {

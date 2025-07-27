@@ -20,5 +20,4 @@ export interface GeneratedMultipleChoiceQuestion extends GeneratedQuestion {
     readonly type: 'multiple_choice';
     readonly choices: Choice[];
     readonly correctChoiceId: string;
-    readonly content: string;
 } 
