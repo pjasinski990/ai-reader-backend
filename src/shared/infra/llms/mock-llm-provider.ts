@@ -15,7 +15,7 @@ export class MockLLMProvider implements LLMProvider {
         const streamedChunks = this.chunkWords(content);
         for (const chunk of streamedChunks) {
             yield chunk;
-            await new Promise(res => setTimeout(res, Random.int(400, 1000)));
+            await new Promise(res => setTimeout(res, Random.int(300, 500)));
         }
     }
 

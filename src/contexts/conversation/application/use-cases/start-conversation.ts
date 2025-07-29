@@ -1,13 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { StartConversation } from '@/contexts/conversation/application/ports/in/start-conversation';
-import { LLMProvider } from '@/shared/ports/out/llm-provider';
 import { ConversationRepo } from '@/contexts/conversation/application/ports/out/conversation-repo';
-import { Message, Role } from '@/shared/entities/message';
+import { ConversationMessage, Message, Role } from '@/shared/entities/message';
 import { Conversation, Mode } from '@/contexts/conversation/entities/conversation';
 
 export class StartConversationUseCase implements StartConversation {
     constructor(
-        private readonly llmProvider: LLMProvider,
         private readonly conversationRepo: ConversationRepo,
     ) { }
 
@@ -17,15 +15,6 @@ export class StartConversationUseCase implements StartConversation {
         initialUserPrompt: string,
     ) {
         const newConversation = generateConversation(projectId, mode, initialUserPrompt);
-        const llmResponse = await this.llmProvider.query(newConversation.messages);
-        const newMessage: Message = {
-            id: uuidv4(),
-            previousId: newConversation.messages.at(-1)!.id,
-            role: Role.ASSISTANT,
-            content: llmResponse,
-        };
-        newConversation.messages.push(newMessage);
-
         await this.conversationRepo.upsert(newConversation);
         return newConversation;
     }
@@ -39,12 +28,16 @@ function generateConversation(
     const systemMessage = generateSystemMessage();
     const initialUserMessage = generateUserMessage(systemMessage.id, initialUserPrompt);
     const title = generateConversationTitle();
+    const id = uuidv4();
     return {
-        id: uuidv4(),
+        id,
         projectId,
         title,
         mode,
-        messages: [systemMessage, initialUserMessage],
+        messages: [
+            toConversationMessage(systemMessage, id),
+            toConversationMessage(initialUserMessage, id)
+        ],
     };
 }
 
@@ -71,6 +64,14 @@ function getSystemPrompt() {
     Base your answers on the materials that will be included in the conversation. You can begin now.`;
 }
 
+// TODO use llm
 function generateConversationTitle() {
     return 'New conversation';
+}
+
+function toConversationMessage(message: Message, conversationId: string): ConversationMessage {
+    return {
+        ...message,
+        conversationId,
+    };
 }

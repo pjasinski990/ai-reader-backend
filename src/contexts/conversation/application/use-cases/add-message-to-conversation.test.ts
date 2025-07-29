@@ -3,25 +3,36 @@ import { AddMessageToConversationUseCase } from '@/contexts/conversation/applica
 import { Role } from '@/shared/entities/message';
 import { Conversation } from '@/contexts/conversation/entities/conversation';
 import { MockConversation } from '@/contexts/conversation/infra/testing/mock-conversation';
+import { InMemoryConversationRepo } from '@/contexts/conversation/infra/in-memory-conversation-repo';
+import { ConversationRepo } from '@/contexts/conversation/application/ports/out/conversation-repo';
+import { MockMessage } from '@/shared/infra/testing/mock-message';
+import { expectResultOk } from '@/shared/infra/testing/assertions';
 
 describe('add user message to chat use case', () => {
+    let conversationRepo: ConversationRepo;
     let useCase: AddMessageToConversationUseCase;
 
     beforeEach(() => {
-        useCase = new AddMessageToConversationUseCase();
+        conversationRepo = new InMemoryConversationRepo();
+        useCase = new AddMessageToConversationUseCase(conversationRepo);
     });
 
     for (const role of [Role.USER, Role.ASSISTANT]) {
         it(`should return conversation with added ${role} message`, async () => {
             const ogConv: Conversation = new MockConversation().build();
-            const newMessage = 'i\'ve seen things you people wouldn\'t believe';
+            const newMessage = new MockMessage().withRole(role).build();
+            const newConvMessage = { ...newMessage, conversationId: ogConv.id };
+            await conversationRepo.upsert(ogConv);
 
-            const newConv = await useCase.execute(ogConv, newMessage, role);
+            const newConv = await useCase.execute(newConvMessage);
 
-            const addedMessage = newConv.messages.at(-1);
-            expect(newConv.messages.length).to.equal(ogConv.messages.length + 1);
+            expectResultOk<Conversation>(newConv);
+
+            const messages = newConv.value.messages;
+            const addedMessage = messages.at(-1);
+            expect(messages.length).to.equal(ogConv.messages.length + 1);
             expect(addedMessage).toBeDefined();
-            expect(addedMessage!.content).to.equal(newMessage);
+            expect(addedMessage!.content).to.equal(newMessage.content);
             expect(addedMessage!.role).to.equal(role);
             expect(addedMessage!.previousId).to.equal(ogConv.messages.at(-1)?.id);
         });

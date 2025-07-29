@@ -10,8 +10,7 @@ export class LLMSummarizer implements Summarizer {
     summarize<T extends Summarizable>(chunks: T[], summaryWords: number = 80): Promise<(T & Summarized)[]> {
         return Promise.all(chunks.map(chunk => {
             return this.summarizeOne(chunk, summaryWords);
-        })
-        );
+        }));
     }
 
     async summarizeOne<T extends Summarizable>(chunk: T, summaryWords: number = 80): Promise<T & Summarized> {

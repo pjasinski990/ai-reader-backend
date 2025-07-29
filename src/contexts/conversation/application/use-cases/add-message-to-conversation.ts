@@ -1,27 +1,29 @@
-import { v4 as uuidv4 } from 'uuid';
 import { AddMessageToConversation } from '@/contexts/conversation/application/ports/in/add-message-to-conversation';
 import { Conversation } from '@/contexts/conversation/entities/conversation';
-import { Message, Role } from '@/shared/entities/message';
+import { ConversationMessage, Message } from '@/shared/entities/message';
+import { ConversationRepo } from '@/contexts/conversation/application/ports/out/conversation-repo';
+import { nok, ok, Result } from '@/shared/entities/result';
 
 export class AddMessageToConversationUseCase implements AddMessageToConversation {
+    constructor(
+        private readonly conversationRepo: ConversationRepo
+    ) { }
+
     async execute(
-        conversation: Conversation,
-        message: string,
-        role: Role,
-        id?: string,
-    ): Promise<Conversation> {
-        const newMessage = {
-            id: id ?? uuidv4(),
-            role: role,
-            content: message,
-            previousId: null,
-        };
-        return this.appendMessage(conversation, newMessage);
+        message: ConversationMessage,
+    ): Promise<Result<Conversation, string>> {
+        const conversation = await this.conversationRepo.getById(message.conversationId);
+        if (!conversation) {
+            return nok('Conversation does not exist');
+        }
+        const updated = this.appendMessage(conversation, message);
+        await this.conversationRepo.upsert(updated);
+        return ok(updated);
     }
 
-    private appendMessage(conversation: Conversation, message: Message): Conversation {
+    private appendMessage(conversation: Conversation, message: ConversationMessage): Conversation {
         const previousMessage = this.lastMessage(conversation);
-        const appendedMessage: Message = { ...message, previousId: previousMessage?.id ?? null };
+        const appendedMessage: ConversationMessage = { ...message, previousId: previousMessage?.id ?? null };
         return {...conversation, messages: [...conversation.messages, appendedMessage] };
     }
 

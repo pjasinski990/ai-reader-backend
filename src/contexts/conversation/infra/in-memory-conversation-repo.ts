@@ -22,6 +22,11 @@ export class InMemoryConversationRepo implements ConversationRepo {
         return this.conversations;
     }
 
+    async getById(id: string): Promise<Conversation | null> {
+        const match = this.conversations.find(c => c.id === id);
+        return match ?? null;
+    }
+
     async getByIds(ids: string[]): Promise<Conversation[]> {
         return this.conversations.filter(c => ids.includes(c.id));
     }
