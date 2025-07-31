@@ -17,7 +17,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(accessLogger);
-app.use(express.json());
+app.use(express.json({ limit: '50mb'}));
 app.use(cookieParser());
 app.use(cors({
     origin: 'http://localhost:3000',
@@ -36,6 +36,22 @@ app.use('/api/project', projectRoutes);
 
 app.use(expressErrorHandler);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     logger.info(`Server is running at http://localhost:${port}`);
+});
+
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received. Shutting down...');
+    server.close(() => {
+        console.log('Server closed.');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('SIGINT received. Shutting down...');
+    server.close(() => {
+        console.log('Server closed.');
+        process.exit(0);
+    });
 });

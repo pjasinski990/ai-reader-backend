@@ -31,6 +31,11 @@ export class JsonMaterialRepo implements MaterialRepo {
         return this.readAll();
     }
 
+    async getByProjectId(projectId: string): Promise<Material[]> {
+        const materials = await this.readAll();
+        return materials.filter(m => m.projectId === projectId);
+    }
+
     async clear(): Promise<void> {
         try {
             await fs.unlink(this.dbPath);

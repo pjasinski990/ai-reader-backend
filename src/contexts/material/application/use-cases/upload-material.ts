@@ -1,7 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import mime from 'mime-types';
 import { UploadMaterial } from '@/contexts/material/application/ports/in/upload-material';
-import { ParserManager } from '@/contexts/material/application/services/parser-manager';
 import { MaterialRepo } from '@/contexts/material/application/ports/out/material-repo';
 import { TextChunker } from '@/contexts/material/application/ports/out/text-chunker';
 import { EmbeddingProvider } from '@/contexts/material/application/ports/out/embedding-provider';
@@ -10,51 +8,40 @@ import { VectorRepo } from '@/contexts/material/application/ports/out/vector-rep
 import { UserUpload } from '@/contexts/material/entities/user-upload';
 import { Material } from '@/contexts/material/entities/material';
 import { LeafChunk, ParentChunk, SummarizedChunk, TextChunk } from '@/contexts/material/entities/chunk';
+import { ParserManager } from '@/contexts/material/application/services/parser-manager';
 
 export class UploadMaterialUseCase implements UploadMaterial {
+    constructor(
+        private readonly manager: ParserManager,
+        private readonly materialRepo: MaterialRepo,
+        private readonly textChunker: TextChunker,
+        private readonly embeddingProvider: EmbeddingProvider,
+        private readonly summarizer: Summarizer,
+        private readonly chunksVectorRepo: VectorRepo,
+    ) {}
+
     async execute(
-        manager: ParserManager,
-        materialRepo: MaterialRepo,
-        textChunker: TextChunker,
-        embeddingProvider: EmbeddingProvider,
-        summarizer: Summarizer,
-        chunksVectorRepo: VectorRepo,
         upload: UserUpload,
     ): Promise<Material> {
-        const content = await manager.parse(upload);
+        const content = await this.manager.parse(upload);
 
         const material: Material = {
             id: uuidv4(),
-            title: upload.name,
+            projectId: upload.projectId,
+            title: upload.title,
             content: content,
         };
 
         if (material.content.type === 'text') {
-            const chunks = textChunker.chunk(material.content.text, 300);
-            const leafChunks = await processLeafChunks(chunks, embeddingProvider, summarizer);
-            const parentChunks = await processParentChunks(chunks, leafChunks, summarizer);
-            await chunksVectorRepo.put(leafChunks);
-            // TODO store leafs / parents in graph repo
+            const chunks = this.textChunker.chunk(material.content.text, 300);
+            const leafChunks = await processLeafChunks(chunks, this.embeddingProvider, this.summarizer);
+            const parentChunks = await processParentChunks(chunks, leafChunks, this.summarizer);
+            await this.chunksVectorRepo.put(leafChunks);
+            // TODO store leaves / parents in graph repo
             // during retrieval we'll want to replace children if many come from the same parent
             void parentChunks;
         }
-
-        return await materialRepo.upsert(material);
-    }
-
-    getAvailableMimeTypes(manager: ParserManager): string[] {
-        return manager.parsers.map(p => p.getValidMimeTypes()).flat();
-    }
-
-    getAvailableFileExtensions(manager: ParserManager): string[] {
-        const mimeTypes = this.getAvailableMimeTypes(manager);
-        return Array.from(
-            new Set(
-                mimeTypes
-                    .map(type => mime.extension(type))
-                    .filter((ext): ext is string => !!ext)
-            )
-        );
+        return await this.materialRepo.upsert(material);
     }
 }
 

@@ -1,6 +1,6 @@
 import { UploadsParser } from '@/contexts/material/application/ports/out/uploads-parser';
 import { UserUpload } from '@/contexts/material/entities/user-upload';
-import { ParsedContent } from '@/contexts/material/entities/pased-content';
+import { ParsedContent } from '@/contexts/material/entities/parsed-content';
 
 export class TxtParser implements UploadsParser {
     private readonly validMimeTypes = ['text/plain', 'application/txt', 'text/markdown'];
@@ -16,7 +16,7 @@ export class TxtParser implements UploadsParser {
     async parse(file: UserUpload): Promise<ParsedContent> {
         try {
             const decoder = new TextDecoder('utf-8');
-            const text = decoder.decode(file.data).trim();
+            const text = decoder.decode(file.buffer).trim();
 
             return {
                 type: 'text',
