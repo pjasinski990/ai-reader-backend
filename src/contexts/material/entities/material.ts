@@ -1,5 +1,6 @@
 import { ContentType, ParsedContent } from '@/contexts/material/entities/parsed-content';
 
+// TODO add projectId
 export interface Material {
     id: string;
     projectId: string;

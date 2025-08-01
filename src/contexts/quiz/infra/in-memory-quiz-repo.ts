@@ -1,19 +1,23 @@
 import { QuizRepo } from '@/contexts/quiz/application/ports/out/quiz-repo';
-import { Quiz } from '@/contexts/quiz/entities/quiz';
+import { QuizDescription } from '@/contexts/quiz/entities';
 
 export class InMemoryQuizRepo implements QuizRepo {
-    private quizzes: Quiz[] = [];
+    private quizzes: QuizDescription[] = [];
 
-    upsert(quiz: Quiz): Promise<Quiz> {
+    async upsert(quiz: QuizDescription): Promise<QuizDescription> {
         if (this.quizzes.find(q => q.id === quiz.id)) {
             this.quizzes = this.quizzes.map(q => q.id === quiz.id ? quiz : q);
         } else {
             this.quizzes.push(quiz);
         }
-        return Promise.resolve(quiz);
+        return quiz;
     }
 
-    getByIds(ids: string[]): Promise<Quiz[]> {
-        return Promise.resolve(this.quizzes.filter(q => ids.includes(q.id)));
+    async deleteById(quizId: string): Promise<void> {
+        this.quizzes = this.quizzes.filter(q => q.id !== quizId);
+    }
+
+    async getAllForProject(projId: string): Promise<QuizDescription[]> {
+        return this.quizzes.filter(q => q.projId === projId);
     }
 }

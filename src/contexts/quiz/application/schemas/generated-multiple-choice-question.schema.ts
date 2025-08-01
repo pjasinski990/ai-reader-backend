@@ -1,5 +1,5 @@
 import Ajv, { ValidateFunction } from 'ajv';
-import { MultipleChoiceQuestion } from '../../entities/quiz-question';
+import { GeneratedMultipleChoiceQuestion } from '../../entities';
 import { ValidateSchemaFn } from '../../../material/application/ports/out/structured-llm-provider';
 
 const ajv = new Ajv({ allErrors: true, strict: false });
@@ -32,9 +32,9 @@ export const multipleChoiceQuestionSchemaJson = {
     additionalProperties: false,
 } as const;
 
-const validateMCQ: ValidateFunction<MultipleChoiceQuestion> = ajv.compile(multipleChoiceQuestionSchemaJson);
+const validateMCQ: ValidateFunction<GeneratedMultipleChoiceQuestion> = ajv.compile(multipleChoiceQuestionSchemaJson);
 
-export const validateMCQSchema: ValidateSchemaFn<MultipleChoiceQuestion> = (value: unknown): value is MultipleChoiceQuestion => {
+export const validateMCQSchema: ValidateSchemaFn<GeneratedMultipleChoiceQuestion> = (value: unknown): value is GeneratedMultipleChoiceQuestion => {
     if (!validateMCQ(value)) {
         return false;
     }

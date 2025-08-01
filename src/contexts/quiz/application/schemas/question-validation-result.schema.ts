@@ -1,6 +1,6 @@
 import Ajv, { ValidateFunction } from 'ajv';
-import { QuestionValidationResult } from '../../entities/quiz-question';
 import { ValidateSchemaFn } from '../../../material/application/ports/out/structured-llm-provider';
+import { QuestionValidationResult } from '../services/quiz-question.service';
 
 const ajv = new Ajv({ allErrors: true, strict: false });
 
@@ -28,4 +28,4 @@ const validateQVR: ValidateFunction<QuestionValidationResult> = ajv.compile(ques
 
 export const validateQVRSchema: ValidateSchemaFn<QuestionValidationResult> = (value: unknown): value is QuestionValidationResult => {
     return validateQVR(value);
-}; 
+};

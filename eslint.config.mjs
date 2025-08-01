@@ -23,6 +23,9 @@ const config = [
     },
     {
         rules: {
+            'no-restricted-imports': ['error', {
+                'patterns': ['**/contexts/quiz/entities/**']
+            }],
             '@/semi': ['error', 'always'],
             '@/indent': ['error', 4, { SwitchCase: 1 }],
             '@/quotes': ['error', 'single', { 'avoidEscape': true }],

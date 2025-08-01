@@ -1,6 +1,7 @@
-import { Quiz } from '@/contexts/quiz/entities/quiz';
+import { QuizDescription } from '@/contexts/quiz/entities';
 
 export interface QuizRepo {
-    upsert(quiz: Quiz): Promise<Quiz>;
-    getByIds(ids: string[]): Promise<Quiz[]>;
+    upsert(quiz: QuizDescription): Promise<QuizDescription>;
+    deleteById(quizId: string): Promise<void>;
+    getAllForProject(projId: string): Promise<QuizDescription[]>;
 }
