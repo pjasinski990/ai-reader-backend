@@ -41,17 +41,17 @@ const server = app.listen(port, () => {
 });
 
 process.on('SIGTERM', () => {
-    console.log('SIGTERM received. Shutting down...');
+    logger.info('SIGTERM received. Shutting down...');
     server.close(() => {
-        console.log('Server closed.');
+        logger.info('Server closed.');
         process.exit(0);
     });
 });
 
 process.on('SIGINT', () => {
-    console.log('SIGINT received. Shutting down...');
+    logger.info('SIGINT received. Shutting down...');
     server.close(() => {
-        console.log('Server closed.');
+        logger.info('Server closed.');
         process.exit(0);
     });
 });

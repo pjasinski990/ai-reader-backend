@@ -34,12 +34,11 @@ authRoutes.post('/logout', async (req, res) => {
 });
 
 authRoutes.get('/refresh', async (req, res) => {
-    const at = await getAuthDescription().extractAccessToken(req);
     const rt = await getAuthDescription().extractRefreshToken(req);
-    if (!at || !rt) {
-        throw new UnauthorizedError('Missing token. Please log in again.');
+    if (!rt) {
+        throw new UnauthorizedError('Missing refresh token. Please log in again.');
     }
-    const refreshResult = await authController.onRefreshAttempt(at, rt);
+    const refreshResult = await authController.onRefreshAttempt(rt);
     if (!refreshResult.ok) {
         throw new ValidationError(`Error during refresh: ${refreshResult.error}`);
     }

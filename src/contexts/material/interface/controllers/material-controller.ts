@@ -15,8 +15,6 @@ import { LLMSummarizer } from '@/contexts/material/infra/summarizing/llm-summari
 import { OpenAIProvider } from '@/shared/infra/llms/open-ai-provider';
 import { ListValidUploadFiletypes } from '@/contexts/material/application/ports/in/list-valid-upload-filetypes';
 import { ListValidUploadFiletypesUseCase } from '@/contexts/material/application/use-cases/list-valid-upload-filetypes';
-import { MockEmbeddingProvider } from '@/contexts/material/infra/testing/mock-embedding-provider';
-import { MockSummarizer } from '@/contexts/material/infra/testing/mock-summarizer';
 
 export class MaterialController {
     constructor(
