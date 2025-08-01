@@ -16,7 +16,7 @@ export function toQuizQuestion(q: GeneratedQuizQuestion, quizId: string): QuizQu
         ...q,
         quizId,
         userAnswer: {
-            state: 'UNASWERED'
+            state: 'UNANSWERED'
         }
     };
 }

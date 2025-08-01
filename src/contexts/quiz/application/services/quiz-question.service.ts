@@ -13,6 +13,8 @@ export class QuestionServices {
     ) {}
 
     async validate(_question: QuizQuestion, _userAnswer: Answer): Promise<QuestionValidationResult> {
+        void _question;
+        void _userAnswer;
         return ok(undefined);
     }
 }

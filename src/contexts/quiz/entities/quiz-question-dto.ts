@@ -9,6 +9,7 @@ export function toQuizQuestionDTO(q: QuizQuestion): QuizQuestionDTO {
     switch (q.type) {
         case 'multiple_choice': {
             const { correctChoiceId, ...rest } = q;
+            void correctChoiceId;
             return rest;
         }
         case 'open_ended':

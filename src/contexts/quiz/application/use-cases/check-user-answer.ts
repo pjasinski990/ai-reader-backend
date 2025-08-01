@@ -27,7 +27,7 @@ export class CheckUserAnswerUseCase implements CheckUserAnswer {
                 answer
             }
         };
-        return this.questionsRepo.upsertQuestion(newQuestion);
+        return this.questionsRepo.upsert(newQuestion);
     }
 
     private async saveCheckedQuestion(question: QuizQuestion, answer: Answer, validationResult: QuestionValidationResult): Promise<void> {
@@ -37,7 +37,7 @@ export class CheckUserAnswerUseCase implements CheckUserAnswer {
             isCorrect: validationResult.ok,
             comment: !validationResult.ok ? validationResult.error : undefined
         };
-        await this.questionsRepo.upsertQuestion({
+        await this.questionsRepo.upsert({
             ...question,
             userAnswer: answerState
         });

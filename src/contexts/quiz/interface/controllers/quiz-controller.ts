@@ -5,7 +5,7 @@ import { OpenAIStructuredProvider } from '@/shared/infra/llms/open-ai-structured
 import { GetQuizzesFromProject } from '@/contexts/quiz/application/ports/in/get-quizzes-from-project';
 import { JsonQuizRepo } from '@/contexts/quiz/infra/json-quiz-repo';
 import { JsonQuestionsRepo } from '@/contexts/quiz/infra/json-questions-repo';
-import { BasicContentExtractionStrategy } from '@/shared/infra/content-extraction/basic-content-extraction-strategy';
+import { AllMaterialContentExtractionStrategy } from '@/shared/infra/content-extraction/all-material-content-extraction-strategy';
 import { QuestionServices, QuestionValidationResult } from '@/contexts/quiz/application/services/quiz-question.service';
 import { CheckUserAnswerUseCase } from '@/contexts/quiz/application/use-cases/check-user-answer';
 import { CheckUserAnswer } from '@/contexts/quiz/application/ports/in/check-user-answer';
@@ -47,7 +47,7 @@ if (!apiKey) { throw new Error('OPENAI_API_KEY is required'); }
 const quizRepo = new JsonQuizRepo();
 const questionsRepo = new JsonQuestionsRepo();
 const materialRepo = new JsonMaterialRepo();
-const contentExtractionStrategy = new BasicContentExtractionStrategy(materialRepo);
+const contentExtractionStrategy = new AllMaterialContentExtractionStrategy(materialRepo);
 
 const getQuizzesFromProject = new GetQuizzesFromProjectUseCase(quizRepo);
 const structuredLLMProvider = new OpenAIStructuredProvider(apiKey);

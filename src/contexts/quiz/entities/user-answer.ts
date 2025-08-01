@@ -2,14 +2,14 @@ export interface Answer {
     value: unknown;
 }
 
-type AnswerLifecycle = 'UNASWERED' | 'NOT_CHECKED' | 'CHECKED';
+type AnswerLifecycle = 'UNANSWERED' | 'NOT_CHECKED' | 'CHECKED';
 
 interface BaseUserAnswer {
     state: AnswerLifecycle;
 }
 
 export interface EmptyAnswer extends BaseUserAnswer {
-    state: 'UNASWERED'
+    state: 'UNANSWERED'
 }
 
 export interface NotCheckedAnswer extends BaseUserAnswer {

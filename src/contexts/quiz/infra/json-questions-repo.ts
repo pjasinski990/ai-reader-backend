@@ -18,7 +18,7 @@ export class JsonQuestionsRepo implements QuestionsRepo {
         return question;
     }
 
-    async upsertQuestion(question: QuizQuestion): Promise<QuizQuestion> {
+    async upsert(question: QuizQuestion): Promise<QuizQuestion> {
         const questions = await this.readAll();
         const questionIndex = questions.findIndex(q => q.id === question.id);
         if (questionIndex !== -1) {
@@ -30,7 +30,7 @@ export class JsonQuestionsRepo implements QuestionsRepo {
         return question;
     }
 
-    async getAllQuestionsFromQuiz(quizId: string): Promise<QuizQuestion[]> {
+    async getAll(quizId: string): Promise<QuizQuestion[]> {
         const questions = await this.readAll();
         return questions.filter(q => q.quizId === quizId);
     }

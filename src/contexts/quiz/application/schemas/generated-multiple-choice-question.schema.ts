@@ -1,5 +1,5 @@
 import Ajv, { ValidateFunction } from 'ajv';
-import { GeneratedMultipleChoiceQuestion } from '../../entities/quiz-question';
+import { GeneratedMultipleChoiceQuestion } from '../../entities';
 import { ValidateSchemaFn } from '../../../material/application/ports/out/structured-llm-provider';
 
 const ajv = new Ajv({ allErrors: true, strict: false });

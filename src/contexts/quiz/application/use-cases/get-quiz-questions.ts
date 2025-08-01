@@ -8,7 +8,7 @@ export class GetQuizQuestionsUseCase implements GetQuizQuestions {
     ) {}
 
     async execute(quizId: string): Promise<QuizQuestionDTO[]> {
-        const quizQuestions = await this.questionsRepo.getAllQuestionsFromQuiz(quizId);
+        const quizQuestions = await this.questionsRepo.getAll(quizId);
         return quizQuestions.map(toQuizQuestionDTO);
     }
 }

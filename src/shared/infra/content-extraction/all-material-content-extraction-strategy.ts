@@ -1,7 +1,7 @@
 import { MaterialRepo } from '@/contexts/material/application/ports/out/material-repo';
 import { ContentExtractionContext, ContentExtractionStrategy } from '@/shared/ports/out/content-extraction-strategy';
 
-export class BasicContentExtractionStrategy implements ContentExtractionStrategy {
+export class AllMaterialContentExtractionStrategy implements ContentExtractionStrategy {
     constructor(
         private readonly materialRepo: MaterialRepo
     ) {}
@@ -9,7 +9,7 @@ export class BasicContentExtractionStrategy implements ContentExtractionStrategy
     async extractContent(
         _context: ContentExtractionContext,
     ): Promise<string> {
-        // TODO select only relevant for project
+        void _context;
         const materials = await this.materialRepo.getAll();
         
         const content = materials

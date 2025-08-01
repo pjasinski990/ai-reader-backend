@@ -30,7 +30,7 @@ export class CreateQuizFromMaterialUseCase implements CreateQuizFromMaterial {
         const quizQuestions = generatedQuestions.map(q => toQuizQuestion(q, newQuiz.id));
         
         await this.quizRepo.upsert(newQuiz);
-        quizQuestions.forEach(async (q) => await this.questionsRepo.upsertQuestion(q));
+        quizQuestions.forEach(async (q) => await this.questionsRepo.upsert(q));
         return newQuiz;
     }
 
