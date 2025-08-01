@@ -1,5 +1,6 @@
 export interface UserUpload {
-    name: string;
+    projectId: string;
+    title: string;
     mimeType: string;
-    data: Buffer;
+    buffer: Buffer;
 }

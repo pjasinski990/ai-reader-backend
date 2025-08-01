@@ -1,6 +1,6 @@
 import { UploadsParser } from '@/contexts/material/application/ports/out/uploads-parser';
 import { UserUpload } from '@/contexts/material/entities/user-upload';
-import { ParsedContent } from '@/contexts/material/entities/pased-content';
+import { ParsedContent } from '@/contexts/material/entities/parsed-content';
 
 export class MockParser implements UploadsParser {
     constructor(private mimeTypes: string[]) { }

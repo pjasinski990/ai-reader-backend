@@ -4,7 +4,7 @@ import { Material } from '@/contexts/material/entities/material';
 export class InMemoryMaterialRepo implements MaterialRepo {
     materials: Material[] = [];
 
-    upsert(material: Material): Promise<Material> {
+    async upsert(material: Material): Promise<Material> {
         if (this.materials.find(s => s.id === material.id)) {
             this.materials = this.materials.map(s => s.id === material.id ? material : s);
         } else {
@@ -13,17 +13,20 @@ export class InMemoryMaterialRepo implements MaterialRepo {
         return Promise.resolve(material);
     }
 
-    getAll(): Promise<Material[]> {
+    async getAll(): Promise<Material[]> {
         return Promise.resolve(this.materials);
     }
 
-    clear(): Promise<void> {
+    async clear(): Promise<void> {
         this.materials = [];
-        return Promise.resolve();
     }
 
     getByIds(ids: string[]): Promise<Material[]> {
         const res = this.materials.filter(m => ids.includes(m.id));
         return Promise.resolve(res);
+    }
+
+    async getByProjectId(projectId: string): Promise<Material[]> {
+        return this.materials.filter(m => m.id === projectId);
     }
 }

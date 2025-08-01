@@ -1,5 +1,5 @@
 import { UserUpload } from '@/contexts/material/entities/user-upload';
-import { ParsedContent } from '@/contexts/material/entities/pased-content';
+import { ParsedContent } from '@/contexts/material/entities/parsed-content';
 
 export interface UploadsParser {
     canParse(file: UserUpload): boolean;

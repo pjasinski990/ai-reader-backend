@@ -1,7 +1,16 @@
-import { ParsedContent } from '@/contexts/material/entities/pased-content';
+import { ContentType, ParsedContent } from '@/contexts/material/entities/parsed-content';
 
 export interface Material {
     id: string;
+    projectId: string;
     title: string;
     content: ParsedContent;
+}
+
+export interface MaterialPreview {
+    id: string;
+    projectId: string;
+    title: string;
+    metadata: Record<string, unknown>;
+    type: ContentType;
 }
