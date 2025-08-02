@@ -1,5 +1,4 @@
 import express from 'express';
-import { accountRoutes } from '@/contexts/account/interface/web/account-routes';
 import { authRoutes } from '@/contexts/auth/interface/web/auth-routes';
 import { projectRoutes } from '@/contexts/project/interface/web/project-routes';
 import { materialRoutes } from '@/contexts/material/interface/web/material-routes';
@@ -28,7 +27,6 @@ app.use('/api/auth', authRoutes);
 
 const auth = new BuildAuthMiddlewareUseCase().execute(extractAccessTokenFromCookie, verifyJwtAccessToken);
 app.use(auth);
-app.use('/api/account', accountRoutes);
 app.use('/api/material', materialRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/conversation', conversationRoutes);
