@@ -1,8 +1,9 @@
 import { decode, encode } from 'gpt-tokenizer';
 import { v4 as uuidv4 } from 'uuid';
 import { TextChunk } from '@/contexts/material/entities/chunk';
+import { TextChunker } from '@/contexts/material/application/ports/out/text-chunker';
 
-export class RecursiveTextChunker {
+export class RecursiveTextChunker implements TextChunker {
     constructor(
         private readonly overlap = 32,
         private readonly fanOut = 4,

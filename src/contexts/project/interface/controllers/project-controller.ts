@@ -4,14 +4,6 @@ import { GetUserProjects } from '@/contexts/project/application/ports/in/get-use
 import { ManageProject } from '@/contexts/project/application/ports/in/manage-project';
 import { GetUserProjectsUseCase } from '@/contexts/project/application/use-cases/get-user-projects';
 import { ManageProjectUseCase } from '@/contexts/project/application/use-cases/manage-project';
-import { InAppQuizPreviewRetriever } from '@/contexts/project/infra/in-app-quiz-preview-retriever';
-import { GetQuizzesUseCase } from '@/contexts/quiz/application/use-cases/get-quizzes';
-import { InMemoryQuizRepo } from '@/contexts/quiz/infra/in-memory-quiz-repo';
-import { InAppConversationPreviewRetriever } from '@/contexts/project/infra/in-app-conversation-preview-retriever';
-import {
-    GetProjectConversationsUseCase
-} from '@/contexts/conversation/application/use-cases/get-project-conversations';
-import { InMemoryConversationRepo } from '@/contexts/conversation/infra/in-memory-conversation-repo';
 import { JsonProjectRepo } from '@/contexts/project/infra/json-project-repo';
 
 export class ProjectController {
@@ -34,13 +26,8 @@ export class ProjectController {
     }
 }
 
-// TODO I don't like that we breach the boundaries between contexts here
-// TODO Return plain projects without conversations and quizzes, remove infra used for that
 export const projectController = new ProjectController(
     new JsonProjectRepo(),
-    new GetUserProjectsUseCase(
-        new InAppConversationPreviewRetriever(new GetProjectConversationsUseCase(new InMemoryConversationRepo())),
-        new InAppQuizPreviewRetriever(new GetQuizzesUseCase(new InMemoryQuizRepo()))
-    ),
+    new GetUserProjectsUseCase(),
     new ManageProjectUseCase(),
 );

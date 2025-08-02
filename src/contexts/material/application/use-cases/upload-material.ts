@@ -33,7 +33,7 @@ export class UploadMaterialUseCase implements UploadMaterial {
         };
 
         if (material.content.type === 'text') {
-            const chunks = this.textChunker.chunk(material.content.text, 300);
+            const chunks = this.textChunker.chunk(material.content.text, 512);
             const leafChunks = await processLeafChunks(chunks, this.embeddingProvider, this.summarizer);
             const parentChunks = await processParentChunks(chunks, leafChunks, this.summarizer);
             await this.chunksVectorRepo.put(leafChunks);
