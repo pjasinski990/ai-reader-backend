@@ -41,13 +41,11 @@ materialRoutes.get(
 );
 
 function parseUploadRequest(req: Request): UserUpload {
-    console.log(req.body);
     const rawData = {
         projectId: req.body.projectId,
         title: req.body.title,
         mimeType: req.body.mimeType,
     };
-    console.log(rawData);
 
     const parseResult = UploadMaterialRequestSchema.safeParse(rawData);
     if (!parseResult.success) {

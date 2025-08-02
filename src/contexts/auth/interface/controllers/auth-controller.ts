@@ -30,8 +30,8 @@ export class AuthController {
         return this.loginAttempt.execute(email, password);
     }
 
-    onRefreshAttempt(accessToken: string, refreshToken: string): Promise<LoginResult> {
-        return this.refreshAttempt.execute(accessToken, refreshToken);
+    onRefreshAttempt(refreshToken: string): Promise<LoginResult> {
+        return this.refreshAttempt.execute(refreshToken);
     }
 
     async onLogout(accessToken: string, refreshToken: string): Promise<LogoutResult> {

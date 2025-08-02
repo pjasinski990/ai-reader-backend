@@ -8,10 +8,7 @@ import { getAuthDescription } from '@/contexts/auth/application/services/get-aut
 import { AuthData } from '@/contexts/auth/entities/login-result';
 import { skipTime } from '@/shared/infra/testing/utils';
 import { expectResultOk } from '@/shared/infra/testing/assertions';
-import {
-    returnsExpiredAccessTokenWith,
-    returnsInvalidAccessTokenWith
-} from '@/contexts/auth/infra/testing/mock-token-verify';
+import { returnsExpiredAccessTokenWith } from '@/contexts/auth/infra/testing/mock-token-verify';
 import { UserRepo } from '@/contexts/auth/application/ports/out/user-repo';
 import { InMemoryUserRepo } from '@/contexts/auth/infra/in-memory-user-repo';
 
@@ -23,8 +20,6 @@ describe('RefreshAttemptUseCase', () => {
     let useCase: RefreshAttemptUseCase;
 
     const userId = 'someUserId';
-    const unusedAccessToken = 'validAccessToken';
-    const unusedRefreshToken = 'validRefreshToken';
 
     beforeEach(() => {
         refreshTokenRepo = new InMemoryRefreshTokenRepo();
@@ -34,33 +29,10 @@ describe('RefreshAttemptUseCase', () => {
         useCase = new RefreshAttemptUseCase(userRepo, refreshTokenService, authDescription);
     });
 
-    it('returns error if access token is malformed', async () => {
-        const result = await useCase.execute('malformed', unusedRefreshToken);
-
-        expect(result).toEqual({ ok: false, error: 'Malformed access token' });
-    });
-
-    it('returns error if userId is not in access token', async () => {
-        authDescription.verifyAccessToken = returnsInvalidAccessTokenWith('Invalid token');
-
-        const result = await useCase.execute(unusedAccessToken, unusedRefreshToken);
-
-        expect(result).toEqual({ ok: false, error: 'Malformed access token' });
-    });
-
-    it('returns error if refresh token is not owned by userId from access token', async () => {
-        authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId: 'susUser' });
-        const refreshToken = await refreshTokenService.issue(userId);
-
-        const result = await useCase.execute(unusedAccessToken, refreshToken);
-
-        expect(result).toEqual({ ok: false, error: 'Access token mismatch - invalid owner' });
-    });
-
     it('returns error if refresh token is invalid', async () => {
         authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
 
-        const result = await useCase.execute(unusedAccessToken, 'invalidRefresh');
+        const result = await useCase.execute('invalidRefresh');
 
         expect(result).toEqual({ ok: false, error: 'Invalid refresh token' });
     });
@@ -71,7 +43,7 @@ describe('RefreshAttemptUseCase', () => {
         const eightDaysMs = 8 * 24 * 60 * 60 * 1000;
         skipTime(eightDaysMs);
 
-        const result = await useCase.execute(unusedAccessToken, refreshToken);
+        const result = await useCase.execute(refreshToken);
 
         expect(result).toEqual({ ok: false, error: 'Refresh token expired' });
     });
@@ -80,7 +52,7 @@ describe('RefreshAttemptUseCase', () => {
         authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
         const refreshToken = await refreshTokenService.issue(userId);
 
-        const result = await useCase.execute(unusedAccessToken, refreshToken);
+        const result = await useCase.execute(refreshToken);
 
         expect(result).toEqual({ ok: false, error: 'Invalid user' });
     });
@@ -90,7 +62,7 @@ describe('RefreshAttemptUseCase', () => {
         await userRepo.upsert({ id: userId, passwordHash: 'unnecessary', email: 'doesnt@matter' });
         const refreshToken = await refreshTokenService.issue(userId);
 
-        const result = await useCase.execute(unusedAccessToken, refreshToken);
+        const result = await useCase.execute(refreshToken);
 
         expectResultOk<AuthData>(result);
         const atVerifyResult = await authDescription.verifyAccessToken(result.value.accessToken);
@@ -103,7 +75,7 @@ describe('RefreshAttemptUseCase', () => {
         authDescription.verifyAccessToken = returnsExpiredAccessTokenWith({ userId });
         const initialRt = await refreshTokenService.issue(userId);
 
-        await useCase.execute(unusedAccessToken, initialRt);
+        await useCase.execute(initialRt);
 
         const oldTokenFound = await refreshTokenService.find(initialRt);
         expect(oldTokenFound).toBeNull();
