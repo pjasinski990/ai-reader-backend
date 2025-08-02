@@ -34,7 +34,7 @@ describe('RefreshAttemptUseCase', () => {
 
         const result = await useCase.execute('invalidRefresh');
 
-        expect(result).toEqual({ ok: false, error: 'Invalid refresh token' });
+        expect(result).toEqual({ ok: false, error: 'Invalid refresh token - not found' });
     });
 
     it('returns error if refresh token is expired', async () => {
