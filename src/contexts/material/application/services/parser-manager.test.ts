@@ -6,9 +6,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 describe('parser manager service', () => {
     let service: ParserManager;
     const testUpload: UserUpload = {
-        name: 'test-file.pdf',
+        projectId: 'testProjectId',
+        title: 'test-file.pdf',
         mimeType: 'application/pdf',
-        data: Buffer.from('some content'),
+        buffer: Buffer.from('some content'),
     };
 
     beforeEach(() => {

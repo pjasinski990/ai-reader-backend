@@ -16,7 +16,7 @@ export class MockParser implements UploadsParser {
     parse(file: UserUpload): Promise<ParsedContent> {
         return Promise.resolve({
             type: 'text',
-            text: `parsed content of ${file.name}`,
+            text: `parsed content of ${file.title}`,
             metadata: {
                 parserMimeTypes: this.mimeTypes,
             }
